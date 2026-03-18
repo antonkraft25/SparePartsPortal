@@ -1,1 +1,34 @@
-<h1>Nav bar här</h1>
+<header class="p-3 w-full fixed top-0 z-50 bg-linear-to-r from-primary to-black">
+  <div class="flex align-middle items-center px-10 mx-auto gap-6">
+    <a class="mx-h-16 text-white border-r-white border-r-2 pr-6"> Nordic Cooling Solutions AB </a>
+    <nav class="flex gap-3 my-2 uppercase text-lg text-white">
+      <a>Hem</a>
+      <a>Reservdelar</a>
+      <a>Order</a>
+      <a>Användare</a>
+    </nav>
+    <div class="flex align-middle ml-auto gap-3">
+      <ng-container *ngIf="!isLoggedIn(); else loggedIn">
+        <form #loginForm="ngForm" (ngSubmit)="login()" class="flex items-center gap-3">
+          <input 
+            [(ngModel)]="creds.email"
+            name="email"
+            type="text" 
+            class="input" 
+            placeholder="Email" />
+          <input
+            [(ngModel)]="creds.password" 
+            name="password"
+            type="password" 
+            class="input" 
+            placeholder="Password" />
+          <button type="submit" class="btn btn-primary">Logga in</button>
+        </form>
+      </ng-container>
+
+      <ng-template #loggedIn>
+        <button (click)="logout()" class="btn btn-secondary">Logga ut</button>
+      </ng-template>
+    </div>
+  </div>
+</header>
