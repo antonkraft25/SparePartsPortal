@@ -16,11 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\" />
     <Folder Include="Data\" />
     <Folder Include="Data\Migrations\" />
+    <Folder Include="DTOs\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Models\" />
     <Folder Include="Repositories\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
