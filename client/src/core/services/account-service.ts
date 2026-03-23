@@ -10,7 +10,7 @@ export class AccountService {
   private http = inject(HttpClient);
   currentUser = signal<User | null>(null);
   private readonly defaultApiUrl = 'https://localhost:7064/api/';
-  private baseUrl = environment.apiUrl?.trim() && environment.apiUrl !== 'api/' ? environment.apiUrl : this.defaultApiUrl;
+  private baseUrl = environment.apiUrl;
   private readonly localStorageKey = 'user';
 
   constructor() {

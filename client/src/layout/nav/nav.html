@@ -8,26 +8,27 @@
       <a>Användare</a>
     </nav>
     <div class="flex align-middle ml-auto gap-3">
-        
-      <form #loginForm="ngForm" (ngSubmit)="login()" class="flex items-center gap-3">
-          <input 
+      @if (accountService.currentUser(); as user) {
+          <button (click)="logout()" class="btn btn-secondary">Logga ut</button>
+      } @else {
+        <form #loginForm="ngForm" (ngSubmit)="login()" class="flex items-center gap-3">
+          <input
             [(ngModel)]="creds.Email"
             name="Email"
-            type="text" 
-            class="input" 
-            placeholder="Email" />
+            type="text"
+            class="input"
+            placeholder="Email"
+          />
           <input
-            [(ngModel)]="creds.Password" 
+            [(ngModel)]="creds.Password"
             name="Password"
-            type="password" 
-            class="input" 
-            placeholder="Password" />
+            type="password"
+            class="input"
+            placeholder="Password"
+          />
           <button type="submit" class="btn btn-primary">Logga in</button>
         </form>
-
-      <ng-template #loggedIn>
-        <button (click)="logout()" class="btn btn-secondary">Logga ut</button>
-      </ng-template>
+      }
     </div>
   </div>
 </header>

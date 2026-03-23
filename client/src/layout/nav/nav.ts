@@ -18,8 +18,6 @@ export class Nav {
 
   protected creds: any = {};
 
-  protected readonly isLoggedIn = computed(() => !!this.accountService.currentUser());
-
   login() {
     this.accountService.login(this.creds).subscribe({
       next: (user) => {
