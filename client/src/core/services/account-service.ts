@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { LoginCreds, User } from '../../types/user';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +9,8 @@ import { environment } from '../../environments/environment.development';
 export class AccountService {
   private http = inject(HttpClient);
   currentUser = signal<User | null>(null);
-  private baseUrl = environment.apiUrl; 
+  private readonly defaultApiUrl = 'https://localhost:7064/api/';
+  private baseUrl = environment.apiUrl?.trim() && environment.apiUrl !== 'api/' ? environment.apiUrl : this.defaultApiUrl;
   private readonly localStorageKey = 'user';
 
   constructor() {

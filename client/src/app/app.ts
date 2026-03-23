@@ -11,4 +11,5 @@ import { Nav } from "../layout/nav/nav";
 })
 export class App {
   protected readonly title = signal('client');
+router: any;
 }

@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { Home } from './home';
-import { Members } from './members';
+import { Home } from '../features/home/home';
+import { Members } from '../features/members/members';
 
 export const routes: Routes = [
-  { path: '', component: Home, pathMatch: 'full' },
+  { path: '', component: Home },
   { path: 'members', component: Members },
   { path: '**', redirectTo: '' },
 ];

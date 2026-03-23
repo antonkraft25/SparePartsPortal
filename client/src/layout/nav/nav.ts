@@ -1,5 +1,4 @@
 import { Component, computed, inject } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from '../../core/services/account-service';
@@ -8,7 +7,7 @@ import { ToastService } from '../../core/services/toast-service';
 @Component({
   standalone: true,
   selector: 'app-nav',
-  imports: [FormsModule, NgIf],
+  imports: [FormsModule],
   templateUrl: './nav.html',
   styleUrl: './nav.css',
 })
