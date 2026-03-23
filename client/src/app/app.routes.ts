@@ -7,6 +7,6 @@ import { SparepartsList } from '../features/spareparts/spareparts-list/sparepart
 export const routes: Routes = [
   { path: '', component: Home },
   { path: 'members', component: Members },
-  { path: '**', redirectTo: '' },
-  {path: 'spareparts-list', component: SparepartsList}
+  {path: 'spareparts-list', component: SparepartsList},
+  { path: '**', redirectTo: '' }
 ];

@@ -1,1 +1,26 @@
-<p>sparparts-list works!</p>
+<div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+  <table class="table">
+    <!-- head -->
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Prize</th>
+        <th>Purchase prize</th>
+        <th>Balance</th>
+      </tr>
+    </thead>
+    @for (sparepart of spareparts; track sparepart.id) {
+    <tbody>
+      <tr>
+        <th>{{sparepart.name}}</th>
+        <td>{{sparepart.location}}</td>
+        <td>{{sparepart.prize}}</td>
+        <td>{{sparepart.purchasePrize}}</td>
+        <td>{{sparepart.balance}}</td>
+      </tr>
+    </tbody>
+    }
+    
+  </table>
+</div>
