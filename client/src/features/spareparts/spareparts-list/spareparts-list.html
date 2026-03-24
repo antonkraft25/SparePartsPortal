@@ -1,0 +1,39 @@
+<div class="flex items-center justify-center h-screen w-full">
+  <div class="w-2/3 z-40 px-3 py-1">
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 flex">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Prize</th>
+            <th>Purchase prize</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (spareparts.length === 0) {
+            <tr>
+              <td colspan="6" class="text-center">Laddar...</td>
+            </tr>
+          } @else {
+            @for (sparepart of spareparts; track sparepart.id) {
+              <tr>
+                <th>{{ sparepart.name }}</th>
+                <td>{{ sparepart.location }}</td>
+                <td>{{ sparepart.prize }}</td>
+                <td>{{ sparepart.purchasePrize }}</td>
+                <td>{{ sparepart.balance }}</td>
+                <td>
+                  <button class="btn btn-outline btn-secondary" (click)="detailsComp.openModal(sparepart)">Redigera</button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<app-sparepart-details #detailsComp (sparepartSaved)="onSparepartSaved($event)" />

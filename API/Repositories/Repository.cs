@@ -48,6 +48,10 @@ public class Repository<T> : IRepository<T> where T : class
     {
         _set.Update(entity);
     }
+    public void UpdateById (string id)
+    {
+        
+    }
 
     public void Remove(T entity)
     {

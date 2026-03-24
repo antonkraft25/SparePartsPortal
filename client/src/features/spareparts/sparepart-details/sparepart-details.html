@@ -1,0 +1,39 @@
+@if (isModalOpen && sparepart) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Redigera reservdel</h3>
+
+      <div class="flex flex-col gap-3">
+        <label class="form-control">
+          <div class="label"><span class="label-text">Namn</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="sparepart.name" />
+        </label>
+
+        <label class="form-control">
+          <div class="label"><span class="label-text">Plats</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="sparepart.location" />
+        </label>
+
+        <label class="form-control">
+          <div class="label"><span class="label-text">Pris</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="sparepart.prize" />
+        </label>
+
+        <label class="form-control">
+          <div class="label"><span class="label-text">Inköpspris</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="sparepart.purchasePrize" />
+        </label>
+
+        <label class="form-control">
+          <div class="label"><span class="label-text">Saldo</span></div>
+          <input type="number" class="input input-bordered w-full" [(ngModel)]="sparepart.balance" />
+        </label>
+      </div>
+
+      <div class="modal-action">
+        <button class="btn btn-primary" (click)="saveSparepart()">Spara</button>
+        <button class="btn" (click)="closeModal()">Stäng</button>
+      </div>
+    </div>
+  </div>
+}
