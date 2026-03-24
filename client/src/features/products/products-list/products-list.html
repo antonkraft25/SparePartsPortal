@@ -9,18 +9,22 @@
       <table class="table">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>Namn</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           @if (products.length === 0) {
             <tr>
-              <td class="text-center">Inga produkter hittades</td>
+              <td colspan="2" class="text-center">Inga produkter hittades</td>
             </tr>
           } @else {
             @for (product of products; track product.id) {
               <tr>
                 <td>{{ product.name }}</td>
+                <td>
+                  <button class="btn btn-outline btn-secondary" (click)="editComp.openModal(product)">Redigera</button>
+                </td>
               </tr>
             }
           }
@@ -32,3 +36,4 @@
 </div>
 
 <app-product-create #createComp (productCreated)="onProductCreated($event)" />
+<app-product-edit #editComp (productUpdated)="onProductUpdated($event)" />

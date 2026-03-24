@@ -1,0 +1,35 @@
+@if (isModalOpen && product) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Redigera produkt</h3>
+
+      <div class="flex flex-col gap-3">
+        <label class="form-control">
+          <div class="label"><span class="label-text">Namn</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="productName" />
+        </label>
+
+        <div class="form-control">
+          <div class="label"><span class="label-text">Kopplade reservdelar</span></div>
+          @if (!product.spareparts || product.spareparts.length === 0) {
+            <p class="text-sm text-base-content/50">Inga reservdelar kopplade</p>
+          } @else {
+            <ul class="flex flex-col gap-2">
+              @for (sparepart of product.spareparts; track sparepart.id) {
+                <li class="flex items-center justify-between bg-base-200 px-3 py-2 rounded-lg">
+                  <span>{{ sparepart.name }}</span>
+                  <button class="btn btn-xs btn-error" (click)="removeSparepart(sparepart.id)">Ta bort</button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+
+      <div class="modal-action">
+        <button class="btn btn-primary" (click)="saveProduct()">Spara</button>
+        <button class="btn" (click)="closeModal()">Stäng</button>
+      </div>
+    </div>
+  </div>
+}

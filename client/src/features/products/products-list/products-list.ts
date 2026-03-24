@@ -2,10 +2,11 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { ProductService } from '../../../core/services/product-service';
 import { Product } from '../../../types/product';
 import { ProductCreate } from '../product-create/product-create';
+import { ProductEdit } from '../product-edit/product-edit';
 
 @Component({
   selector: 'app-products-list',
-  imports: [ProductCreate],
+  imports: [ProductCreate, ProductEdit],
   templateUrl: './products-list.html',
   styleUrl: './products-list.css',
 })
@@ -34,4 +35,9 @@ export class ProductsList implements OnInit {
     this.products = [...this.products, product];
   }
 
+  onProductUpdated(updated: Product) {
+    this.products = this.products.map(p =>
+      p.id === updated.id ? updated : p
+    );
+  }
 }
