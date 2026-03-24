@@ -25,16 +25,23 @@ namespace API.Controllers
              Console.WriteLine($"Sparepart found: {sparepart?.Name ?? "NULL"}");
             if (sparepart == null) return NotFound();
 
-            sparepart.Name = dto.Name;
-            sparepart.PurchasePrize = dto.PurchasePrize;
-            sparepart.Prize = dto.Prize;
-            sparepart.Location = dto.Location;
-            sparepart.Balance = dto.Balance;
+            sparepart = ConvertDtoSparepart(sparepart, dto);
 
             repository.Update(sparepart);
             await repository.SaveChangesAsync();
 
             return Ok(sparepart);
+        }
+
+        private Sparepart ConvertDtoSparepart(Sparepart sparepart, SparepartUpdateDto dto)
+        {
+            sparepart.Name = dto.Name;
+            sparepart.PurchasePrize = dto.PurchasePrize;
+            sparepart.Prize = dto.Prize;
+            sparepart.Location = dto.Location;
+            sparepart.Balance = dto.Balance;
+            
+            return sparepart;
         }
 
     }
