@@ -8,5 +8,5 @@ export const routes: Routes = [
   { path: '', component: Home },
   { path: 'members', component: Members },
   {path: 'spareparts-list', component: SparepartsList},
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: 'Home' }
 ];

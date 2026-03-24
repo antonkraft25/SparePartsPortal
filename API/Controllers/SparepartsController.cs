@@ -16,5 +16,26 @@ namespace API.Controllers
             return Ok(await repository.GetAllAsync());
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateSparepart(string id, SparepartUpdateDto dto)
+        {
+            Console.WriteLine($"Looking for sparepart with id: {id}");
+            var sparepart = await repository.GetByIdAsync(id);
+
+             Console.WriteLine($"Sparepart found: {sparepart?.Name ?? "NULL"}");
+            if (sparepart == null) return NotFound();
+
+            sparepart.Name = dto.Name;
+            sparepart.PurchasePrize = dto.PurchasePrize;
+            sparepart.Prize = dto.Prize;
+            sparepart.Location = dto.Location;
+            sparepart.Balance = dto.Balance;
+
+            repository.Update(sparepart);
+            await repository.SaveChangesAsync();
+
+            return Ok(sparepart);
+        }
+
     }
 }

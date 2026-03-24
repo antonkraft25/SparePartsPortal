@@ -15,4 +15,8 @@ export class SparepartService {
   getSpareparts(){
     return this.http.get<Sparepart[]>(this.baseUrl + 'spareparts');
   }
+
+  updateSparepart(sparepart: Sparepart) {
+    return this.http.put<Sparepart>(this.baseUrl + 'spareparts/' + sparepart.id, sparepart);
+  }
 }
