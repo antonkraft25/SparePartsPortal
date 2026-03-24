@@ -1,0 +1,19 @@
+@if (isModalOpen) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Skapa produkt</h3>
+
+      <div class="form-control gap-3">
+        <label class="form-control">
+          <div class="label"><span class="label-text">Namn</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="productName" placeholder="Produktnamn..." />
+        </label>
+      </div>
+
+      <div class="modal-action">
+        <button class="btn btn-primary" (click)="saveProduct()">Skapa</button>
+        <button class="btn" (click)="closeModal()">Stäng</button>
+      </div>
+    </div>
+  </div>
+}

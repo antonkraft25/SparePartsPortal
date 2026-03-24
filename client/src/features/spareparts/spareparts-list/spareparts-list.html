@@ -1,5 +1,8 @@
 <div class="flex items-center justify-center h-screen w-full">
   <div class="w-2/3 z-40 px-3 py-1">
+    <div class="flex justify-end mb-3">
+      <a routerLink="/products" class="btn btn-outline">Visa produkter</a>
+    </div>
     <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 flex">
       <table class="table">
         <thead>
@@ -25,7 +28,12 @@
                 <td>{{ sparepart.purchasePrize }}</td>
                 <td>{{ sparepart.balance }}</td>
                 <td>
-                  <button class="btn btn-outline btn-secondary" (click)="detailsComp.openModal(sparepart)">Redigera</button>
+                  <button
+                    class="btn btn-outline btn-secondary"
+                    (click)="detailsComp.openModal(sparepart)"
+                  >
+                    Redigera
+                  </button>
                 </td>
               </tr>
             }

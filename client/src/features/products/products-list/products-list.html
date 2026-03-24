@@ -1,0 +1,34 @@
+<div class="flex items-center justify-center h-screen w-full">
+  <div class="w-2/3 z-40 px-3 py-1">
+
+    <div class="flex justify-end mb-3">
+      <button class="btn btn-primary" (click)="createComp.openModal()">Skapa produkt</button>
+    </div>
+
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (products.length === 0) {
+            <tr>
+              <td class="text-center">Inga produkter hittades</td>
+            </tr>
+          } @else {
+            @for (product of products; track product.id) {
+              <tr>
+                <td>{{ product.name }}</td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<app-product-create #createComp (productCreated)="onProductCreated($event)" />

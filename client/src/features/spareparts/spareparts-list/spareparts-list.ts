@@ -2,10 +2,11 @@ import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { SparepartService } from '../../../core/services/sparepart-service';
 import { Sparepart } from '../../../types/sparepart';
 import { SparepartDetails } from "../sparepart-details/sparepart-details";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-sparparts-list',
-  imports: [SparepartDetails],
+  imports: [RouterLink, SparepartDetails],
   templateUrl: './spareparts-list.html',
   styleUrl: './spareparts-list.css',
 })
