@@ -1,8 +1,10 @@
-<div class="flex items-center justify-center h-screen w-full">
+<div class="flex items-center justify-center min-h-screen w-full py-20">
   <div class="w-2/3 z-40 px-3 py-1">
-    <div class="flex justify-end mb-3">
+    <div class="flex justify-end mb-3 gap-2">
+      <button class="btn btn-primary" (click)="createComp.openModal()">Skapa reservdel</button>
       <a routerLink="/products" class="btn btn-outline">Visa produkter</a>
     </div>
+
     <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 flex">
       <table class="table">
         <thead>
@@ -45,3 +47,4 @@
 </div>
 
 <app-sparepart-details #detailsComp (sparepartSaved)="onSparepartSaved($event)" />
+<app-sparepart-create #createComp (sparepartCreated)="onSparepartCreated($event)" />

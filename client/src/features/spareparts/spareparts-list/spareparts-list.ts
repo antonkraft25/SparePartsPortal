@@ -3,10 +3,11 @@ import { SparepartService } from '../../../core/services/sparepart-service';
 import { Sparepart } from '../../../types/sparepart';
 import { SparepartDetails } from "../sparepart-details/sparepart-details";
 import { RouterLink } from '@angular/router';
+import { SparepartCreate } from '../sparepart-create/sparepart-create';
 
 @Component({
   selector: 'app-sparparts-list',
-  imports: [RouterLink, SparepartDetails],
+  imports: [RouterLink, SparepartDetails, SparepartCreate],
   templateUrl: './spareparts-list.html',
   styleUrl: './spareparts-list.css',
 })
@@ -42,5 +43,9 @@ export class SparepartsList implements OnInit {
     this.spareparts = this.spareparts.map(s =>
       s.id === updated.id ? updated : s
     );
+  }
+
+  onSparepartCreated(sparepart: Sparepart) {
+    this.spareparts = [...this.spareparts, sparepart];
   }
 }

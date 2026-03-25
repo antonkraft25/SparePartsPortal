@@ -19,4 +19,8 @@ export class SparepartService {
   updateSparepart(sparepart: Sparepart) {
     return this.http.put<Sparepart>(this.baseUrl + 'spareparts/' + sparepart.id, sparepart);
   }
+
+  createSparepart(data: { name: string, location: string, prize: string, purchasePrize: string, balance: number, productIds: string[] }) {
+    return this.http.post<Sparepart>(this.baseUrl + 'spareparts', data);
+  }
 }

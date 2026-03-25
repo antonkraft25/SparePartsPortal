@@ -1,0 +1,97 @@
+@if (isModalOpen) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Skapa reservdel</h3>
+
+      <!-- Steps indicator -->
+      <ul class="steps w-full mb-6">
+        <li class="step" [class.step-primary]="currentStep >= 1">Detaljer</li>
+        <li class="step" [class.step-primary]="currentStep >= 2">Produkter</li>
+      </ul>
+
+      <!-- Step 1: Fill in fields -->
+      @if (currentStep === 1) {
+        <div class="flex flex-col gap-3">
+          <label class="form-control">
+            <div class="label"><span class="label-text">Namn</span></div>
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              [(ngModel)]="name"
+              placeholder="Namn..."
+            />
+          </label>
+
+          <label class="form-control">
+            <div class="label"><span class="label-text">Plats</span></div>
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              [(ngModel)]="location"
+              placeholder="Plats..."
+            />
+          </label>
+
+          <label class="form-control">
+            <div class="label"><span class="label-text">Pris</span></div>
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              [(ngModel)]="prize"
+              placeholder="Pris..."
+            />
+          </label>
+
+          <label class="form-control">
+            <div class="label"><span class="label-text">Inköpspris</span></div>
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              [(ngModel)]="purchasePrize"
+              placeholder="Inköpspris..."
+            />
+          </label>
+
+          <label class="form-control">
+            <div class="label"><span class="label-text">Saldo</span></div>
+            <input type="number" class="input input-bordered w-full" [(ngModel)]="balance" />
+          </label>
+        </div>
+
+        <div class="modal-action">
+          <button class="btn btn-primary" (click)="nextStep()">Nästa</button>
+          <button class="btn" (click)="closeModal()">Stäng</button>
+        </div>
+      }
+
+      <!-- Step 2: Select products -->
+      @if (currentStep === 2) {
+        <div class="flex flex-col gap-2">
+          @if (products.length === 0) {
+            <p class="text-sm text-base-content/50">Inga produkter hittades</p>
+          } @else {
+            @for (product of products; track product.id) {
+              <div
+                class="flex items-center justify-between bg-base-200 px-3 py-2 rounded-lg cursor-pointer"
+                [class.bg-primary]="isSelected(product.id)"
+                [class.text-primary-content]="isSelected(product.id)"
+                (click)="toggleProduct(product.id)"
+              >
+                <span>{{ product.name }}</span>
+                @if (isSelected(product.id)) {
+                  <span class="text-sm">✓</span>
+                }
+              </div>
+            }
+          }
+        </div>
+
+        <div class="modal-action">
+          <button class="btn btn-primary" (click)="saveSparepart()">Skapa</button>
+          <button class="btn btn-ghost" (click)="prevStep()">Tillbaka</button>
+          <button class="btn" (click)="closeModal()">Stäng</button>
+        </div>
+      }
+    </div>
+  </div>
+}
