@@ -4,6 +4,7 @@ import { ProductService } from '../../../core/services/product-service';
 import { Product } from '../../../types/product';
 import { Sparepart } from '../../../types/sparepart';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../core/services/toast-service';
 
 @Component({
   selector: 'app-sparepart-create',
@@ -14,6 +15,8 @@ import { FormsModule } from '@angular/forms';
 export class SparepartCreate {
   protected sparepartService = inject(SparepartService);
   protected productService = inject(ProductService);
+  private toastService = inject(ToastService);
+
 
   isModalOpen = false;
   currentStep = 1;
@@ -78,10 +81,14 @@ export class SparepartCreate {
       productIds: this.selectedProductIds
     }).subscribe({
       next: (sparepart) => {
+        this.toastService.success('Reservdel skapad!');
         this.sparepartCreated.emit(sparepart);
         this.closeModal();
       },
-      error: (err) => console.error('Error creating sparepart:', err)
+      error: (err) => {
+        this.toastService.error('Något gick fel vid skapande!');
+        console.error('Error creating sparepart:', err);
+      }
     });
   }
 

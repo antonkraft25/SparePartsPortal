@@ -13,7 +13,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<object>>> GetAllSpareparts()
         {
-            var spareparts = await repository.GetAllAsync();
+            var spareparts = await repository.FindAsync(s => s.IsActive);
             return Ok(spareparts.Select(s => new
             {
                 id = s.Id,
@@ -23,6 +23,20 @@ namespace API.Controllers
                 location = s.Location,
                 balance = s.Balance
             }));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeactivateSparepart(string id)
+        {
+            var sparepart = await repository.GetByIdAsync(id);
+
+            if (sparepart == null) return NotFound();
+
+            sparepart.IsActive = false;
+            repository.Update(sparepart);
+            await repository.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpPost]

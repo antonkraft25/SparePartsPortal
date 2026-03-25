@@ -48,4 +48,8 @@ export class SparepartsList implements OnInit {
   onSparepartCreated(sparepart: Sparepart) {
     this.spareparts = [...this.spareparts, sparepart];
   }
+
+  onSparepartDeactivated(id: string) {
+    this.spareparts = this.spareparts.filter(s => s.id !== id);
+  }
 }

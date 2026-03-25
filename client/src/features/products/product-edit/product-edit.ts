@@ -2,6 +2,7 @@ import { Component, inject, output } from '@angular/core';
 import { ProductService } from '../../../core/services/product-service';
 import { Product } from '../../../types/product';
 import { FormsModule } from '@angular/forms';
+import { ToastService } from '../../../core/services/toast-service';
 
 @Component({
   selector: 'app-product-edit',
@@ -10,7 +11,8 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './product-edit.css',
 })
 export class ProductEdit {
-   protected productService = inject(ProductService);
+  protected productService = inject(ProductService);
+  private toastService = inject(ToastService);
   isModalOpen = false;
   product: Product | null = null;
   productName = '';
@@ -39,10 +41,12 @@ export class ProductEdit {
     if (!this.product || !this.productName.trim()) return;
     this.productService.updateProduct(this.product.id, this.productName).subscribe({
       next: (updated) => {
+        this.toastService.success('Produkt uppdaterad!');
         this.productUpdated.emit(updated);
         this.closeModal();
       },
       error: (err) => {
+        this.toastService.error('Något gick fel vid uppdatering!');
         console.error('Error updating product:', err);
       }
     });
@@ -52,9 +56,11 @@ export class ProductEdit {
     if (!this.product) return;
     this.productService.removeSparepart(this.product.id, sparepartId).subscribe({
       next: () => {
+        this.toastService.success('Reservdel borttagen från produkt!');
         this.product!.spareparts = this.product!.spareparts?.filter(s => s.id !== sparepartId);
       },
       error: (err) => {
+        this.toastService.error('Något gick fel!');
         console.error('Error removing sparepart:', err);
       }
     });

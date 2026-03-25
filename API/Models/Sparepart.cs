@@ -11,6 +11,7 @@ public class Sparepart
     public required string Prize { get; set; }
     public required string Location { get; set; }
     public int Balance { get; set; }
+    public bool IsActive { get; set; } = true;
     public ICollection<OrderSparepart> OrderSpareparts { get; set; } = new List<OrderSparepart>();
     public ICollection<ProductSparepart> ProductSpareparts { get; set; } = new List<ProductSparepart>();
     public ICollection<PoSparepart> PoSpareparts { get; set; } = new List<PoSparepart>();

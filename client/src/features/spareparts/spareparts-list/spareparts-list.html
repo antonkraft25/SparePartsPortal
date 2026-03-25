@@ -46,5 +46,8 @@
   </div>
 </div>
 
-<app-sparepart-details #detailsComp (sparepartSaved)="onSparepartSaved($event)" />
+<app-sparepart-details #detailsComp 
+  (sparepartSaved)="onSparepartSaved($event)" 
+  (sparepartDeactivated)="onSparepartDeactivated($event)" />
 <app-sparepart-create #createComp (sparepartCreated)="onSparepartCreated($event)" />
+
