@@ -56,12 +56,10 @@ app.MapControllers();
 
 // Seed roles on startup
 using var scope = app.Services.CreateScope();
-var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-string[] roles = ["Admin", "Tekniker", "Lagerpersonal"];
-foreach (var role in roles)
-{
-    if (!await roleManager.RoleExistsAsync(role))
-        await roleManager.CreateAsync(new IdentityRole(role));
-}
+var services = scope.ServiceProvider;
+var context = services.GetRequiredService<AppDbContext>();
+var userManager = services.GetRequiredService<UserManager<User>>();
+var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+await Seeder.SeedAsync(context, userManager, roleManager);
 
 app.Run();
