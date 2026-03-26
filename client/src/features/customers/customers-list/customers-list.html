@@ -1,0 +1,45 @@
+<div class="flex items-center justify-center min-h-screen w-full py-20">
+  <div class="w-2/3 z-40 px-3 py-1">
+
+    <div class="flex justify-end mb-3">
+      <button class="btn btn-primary" (click)="createComp.openModal()">Skapa kund</button>
+    </div>
+
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Namn</th>
+            <th>Stad</th>
+            <th>Postnummer</th>
+            <th>Gatuadress</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (customers.length === 0) {
+            <tr>
+              <td colspan="5" class="text-center">Inga kunder hittades</td>
+            </tr>
+          } @else {
+            @for (customer of customers; track customer.id) {
+              <tr>
+                <td>{{ customer.name }}</td>
+                <td>{{ customer.city }}</td>
+                <td>{{ customer.postalcode }}</td>
+                <td>{{ customer.streetName }}</td>
+                <td>
+                  <button class="btn btn-outline btn-secondary" (click)="editComp.openModal(customer)">Redigera</button>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<app-customer-create #createComp (customerCreated)="onCustomerCreated($event)" />
+<app-customer-edit #editComp (customerUpdated)="onCustomerUpdated($event)" />

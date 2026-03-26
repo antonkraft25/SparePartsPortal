@@ -1,0 +1,34 @@
+@if (isModalOpen && customer) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Redigera kund</h3>
+
+      <div class="flex flex-col gap-3">
+        <label class="form-control">
+          <div class="label"><span class="label-text">Namn</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="name" />
+        </label>
+
+        <label class="form-control">
+          <div class="label"><span class="label-text">Stad</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="city" />
+        </label>
+
+        <label class="form-control">
+          <div class="label"><span class="label-text">Postnummer</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="postalcode" />
+        </label>
+
+        <label class="form-control">
+          <div class="label"><span class="label-text">Gatuadress</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="streetName" />
+        </label>
+      </div>
+
+      <div class="modal-action">
+        <button class="btn btn-primary" (click)="saveCustomer()">Spara</button>
+        <button class="btn" (click)="closeModal()">Stäng</button>
+      </div>
+    </div>
+  </div>
+}
