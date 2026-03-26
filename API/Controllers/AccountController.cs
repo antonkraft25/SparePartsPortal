@@ -1,37 +1,62 @@
-using API.Data;
 using API.DTOs;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Controllers;
+
+public class AccountController(UserManager<User> userManager, ITokenService tokenService) : BaseApiController
 {
-    public class AccountController(AppDbContext context, ITokenService tokenService) : BaseApiController
+    [HttpPost("register")]
+    public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
-        [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> LogIn(LoginDto loginDto)
+        if (await userManager.FindByEmailAsync(registerDto.Email) != null)
+            return BadRequest("Email already in use");
+
+        var user = new User
         {
-            var user = await context.Users.SingleOrDefaultAsync(x => x.Email == loginDto.Email);
-            if (user == null)
-                return Unauthorized("Invalid email or password");
+            Email = registerDto.Email,
+            UserName = registerDto.Email,
+            FirstName = registerDto.FirstName,
+            LastName = registerDto.LastName,
+            CustomerId = registerDto.CustomerId
+        };
 
-            if (user.Password != loginDto.Password)
-                return Unauthorized("Invalid email or password");
+        var result = await userManager.CreateAsync(user, registerDto.Password);
 
-            var token = tokenService.CreateToken(user);
+        if (!result.Succeeded) return BadRequest(result.Errors);
 
-            var userDto = new UserDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Token = token
-            };
+        await userManager.AddToRoleAsync(user, registerDto.Role);
 
-            return Ok(userDto);
-        }
+        return Ok(new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email!,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Token = await tokenService.CreateToken(user)
+        });
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
+    {
+        var user = await userManager.FindByEmailAsync(loginDto.Email);
+
+        if (user == null) return Unauthorized("Invalid email or password");
+
+        var result = await userManager.CheckPasswordAsync(user, loginDto.Password);
+
+        if (!result) return Unauthorized("Invalid email or password");
+
+        return Ok(new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email!,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Token = await tokenService.CreateToken(user)
+        });
     }
 }

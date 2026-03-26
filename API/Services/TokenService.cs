@@ -1,29 +1,33 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace API.Services;
 
-public class TokenService(IConfiguration config) : ITokenService
+public class TokenService(IConfiguration config, UserManager<User> userManager) : ITokenService
 {
-    public string CreateToken (User user)
+    public async Task<string> CreateToken(User user)
     {
         var tokenKey = config["TokenKey"] ?? throw new Exception("Cannot get token key");
-        if(tokenKey.Length < 64) 
+        if (tokenKey.Length < 64)
             throw new Exception("TokenKey must be at least 64 characters long");
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
+        var roles = await userManager.GetRolesAsync(user);
+
         var claims = new List<Claim>
         {
-            new(ClaimTypes.Email, user.Email),
+            new(ClaimTypes.Email, user.Email!),
             new(ClaimTypes.NameIdentifier, user.Id)
         };
+
+        // Add roles as claims
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
@@ -33,9 +37,10 @@ public class TokenService(IConfiguration config) : ITokenService
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = creds
         };
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        
+
         return tokenHandler.WriteToken(token);
     }
 }

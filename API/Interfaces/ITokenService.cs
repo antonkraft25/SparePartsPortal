@@ -1,9 +1,8 @@
-using System;
 using API.Models;
 
 namespace API.Interfaces;
 
 public interface ITokenService
 {
-    string CreateToken (User user);
+    Task<string> CreateToken(User user);
 }
