@@ -33,4 +33,8 @@ export class AccountService {
     localStorage.removeItem(this.localStorageKey);
     this.currentUser.set(null);
   }
+
+  resetPassword(email: string, newPassword: string) {
+    return this.http.post(this.baseUrl + 'account/reset-password', { email, newPassword }, { responseType: 'text' });
+  }
 }

@@ -1,0 +1,46 @@
+<div class="min-h-screen flex items-center justify-center bg-base-200">
+  <!-- Theme switcher top right -->
+  <div class="fixed top-4 right-4 dropdown dropdown-end">
+    <button tabindex="0" class="btn btn-ghost btn-sm">🎨 {{ selectedTheme() }}</button>
+    <ul tabindex="0" class="dropdown-content z-50 menu bg-base-100 rounded-box w-52 p-2 shadow">
+      @for (theme of themes; track $index) {
+        <li (click)="handleSelectTheme(theme)">
+          <a>{{ theme }}</a>
+        </li>
+      }
+    </ul>
+  </div>
+
+  <div class="card w-full max-w-md bg-base-100 shadow-xl">
+    <div class="card-body gap-4">
+      <h1 class="text-2xl font-bold text-center">Nordic Cooling Solutions AB</h1>
+      <p class="text-center text-base-content/60">Logga in på ditt konto</p>
+
+      <div class="form-control">
+        <div class="label"><span class="label-text">Email</span></div>
+        <input
+          type="email"
+          class="input input-bordered w-full"
+          [(ngModel)]="creds.email"
+          placeholder="din@email.se"
+        />
+      </div>
+
+      <div class="form-control">
+        <div class="label"><span class="label-text">Lösenord</span></div>
+        <input
+          type="password"
+          class="input input-bordered w-full"
+          [(ngModel)]="creds.password"
+          placeholder="••••••••"
+        />
+      </div>
+
+      <button class="btn btn-primary w-full mt-2" (click)="login()">Logga in</button>
+
+      <div class="text-center">
+        <a routerLink="/reset-password" class="link link-primary text-sm">Glömt lösenordet?</a>
+      </div>
+    </div>
+  </div>
+</div>

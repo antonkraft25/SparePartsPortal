@@ -48,7 +48,7 @@ export class Nav implements OnInit {
 
   logout() {
     this.accountService.logout();
-    this.router.navigateByUrl('/');
-    this.toast.success('You have been logged out.');
+    this.router.navigateByUrl('/login');
+    this.toast.success('Du har loggats ut.');
   }
 }

@@ -59,4 +59,19 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
             Token = await tokenService.CreateToken(user)
         });
     }
+
+    [HttpPost("reset-password")]
+    public async Task<ActionResult> ResetPassword(ResetPasswordDto dto)
+    {
+        var user = await userManager.FindByEmailAsync(dto.Email);
+
+        if (user == null) return NotFound("No account found with that email");
+
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+
+        if (!result.Succeeded) return BadRequest(result.Errors);
+
+        return Ok("Password reset successfully");
+    }
 }

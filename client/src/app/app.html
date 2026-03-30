@@ -1,4 +1,7 @@
-<app-nav></app-nav>
+@if (accountService.currentUser()) {
+  <app-nav />
+}
+<router-outlet />
 
-<router-outlet></router-outlet>
+
 

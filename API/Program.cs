@@ -25,7 +25,8 @@ builder.Services.AddIdentityCore<User>(opt =>
     opt.Password.RequiredLength = 6;
 })
 .AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<AppDbContext>();
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
 
 builder.Services.AddCors();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

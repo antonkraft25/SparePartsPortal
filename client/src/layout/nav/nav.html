@@ -43,25 +43,7 @@
       </div>
       @if (accountService.currentUser(); as user) {
         <button (click)="logout()" class="btn btn-secondary">Logga ut</button>
-      } @else {
-        <form #loginForm="ngForm" (ngSubmit)="login()" class="flex items-center gap-3">
-          <input
-            [(ngModel)]="creds.Email"
-            name="Email"
-            type="text"
-            class="input"
-            placeholder="Email"
-          />
-          <input
-            [(ngModel)]="creds.Password"
-            name="Password"
-            type="password"
-            class="input"
-            placeholder="Password"
-          />
-          <button type="submit" class="btn btn-primary">Logga in</button>
-        </form>
-      }
+      } 
     </div>
   </div>
 </header>
