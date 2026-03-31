@@ -42,8 +42,33 @@
         </ul>
       </div>
       @if (accountService.currentUser(); as user) {
-        <button (click)="logout()" class="btn btn-secondary">Logga ut</button>
-      } 
+        <div class="dropdown dropdown-end">
+          <button tabindex="0" class="btn btn-ghost text-white">
+            {{ user.firstName }} {{ user.lastName }}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          </button>
+          <ul
+            tabindex="0"
+            class="dropdown-content z-50 menu bg-base-100 rounded-box w-52 p-2 shadow mt-1"
+          >
+            <li><a routerLink="/profile">Min profil</a></li>
+            <li><a (click)="logout()">Logga ut</a></li>
+          </ul>
+        </div>
+      }
     </div>
   </div>
 </header>

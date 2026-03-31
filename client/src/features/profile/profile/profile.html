@@ -1,0 +1,59 @@
+<div class="flex items-center justify-center min-h-screen w-full py-20">
+  <div class="w-full max-w-lg px-3 flex flex-col gap-6">
+    <!-- Profile info -->
+    <div class="card bg-base-100 shadow">
+      <div class="card-body gap-4">
+        <h2 class="card-title">Min profil</h2>
+
+        <div class="form-control">
+          <div class="label"><span class="label-text">Förnamn</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="firstName" />
+        </div>
+
+        <div class="form-control">
+          <div class="label"><span class="label-text">Efternamn</span></div>
+          <input type="text" class="input input-bordered w-full" [(ngModel)]="lastName" />
+        </div>
+
+        <div class="form-control">
+          <div class="label"><span class="label-text">Email</span></div>
+          <input type="email" class="input input-bordered w-full" [(ngModel)]="email" />
+        </div>
+
+        <button class="btn btn-primary w-full" (click)="updateProfile()">Spara ändringar</button>
+      </div>
+    </div>
+
+    <!-- Change password -->
+    <div class="card bg-base-100 shadow">
+      <div class="card-body gap-4">
+        <h2 class="card-title">Byt lösenord</h2>
+
+        <div class="form-control">
+          <div class="label"><span class="label-text">Nuvarande lösenord</span></div>
+          <input
+            type="password"
+            class="input input-bordered w-full"
+            [(ngModel)]="currentPassword"
+          />
+        </div>
+
+        <div class="form-control">
+          <div class="label"><span class="label-text">Nytt lösenord</span></div>
+          <input type="password" class="input input-bordered w-full" [(ngModel)]="newPassword" />
+        </div>
+
+        <div class="form-control">
+          <div class="label"><span class="label-text">Bekräfta nytt lösenord</span></div>
+          <input
+            type="password"
+            class="input input-bordered w-full"
+            [(ngModel)]="confirmPassword"
+          />
+        </div>
+
+        <button class="btn btn-primary w-full" (click)="changePassword()">Byt lösenord</button>
+      </div>
+    </div>
+  </div>
+</div>

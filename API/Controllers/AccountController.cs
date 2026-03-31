@@ -1,13 +1,16 @@
 using API.DTOs;
 using API.Interfaces;
 using API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
+[Authorize]
 public class AccountController(UserManager<User> userManager, ITokenService tokenService) : BaseApiController
 {
+    [AllowAnonymous]
     [HttpPost("register")]
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
@@ -39,6 +42,7 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
         });
     }
 
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
@@ -60,6 +64,7 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
         });
     }
 
+    [AllowAnonymous]
     [HttpPost("reset-password")]
     public async Task<ActionResult> ResetPassword(ResetPasswordDto dto)
     {
@@ -73,5 +78,43 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
         if (!result.Succeeded) return BadRequest(result.Errors);
 
         return Ok("Password reset successfully");
+    }
+
+    [HttpPut("update-profile")]
+    public async Task<ActionResult<UserDto>> UpdateProfile(UpdateProfileDto dto)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user == null) return Unauthorized();
+
+        user.FirstName = dto.FirstName;
+        user.LastName = dto.LastName;
+        user.Email = dto.Email;
+        user.UserName = dto.Email;
+        user.NormalizedEmail = dto.Email.ToUpper();
+        user.NormalizedUserName = dto.Email.ToUpper();
+
+        var result = await userManager.UpdateAsync(user);
+        if (!result.Succeeded) return BadRequest(result.Errors);
+
+        return Ok(new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email!,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Token = await tokenService.CreateToken(user)
+        });
+    }
+
+    [HttpPut("change-password")]
+    public async Task<ActionResult> ChangePassword(ChangePasswordDto dto)
+    {
+        var user = await userManager.GetUserAsync(User);
+        if (user == null) return Unauthorized();
+
+        var result = await userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+        if (!result.Succeeded) return BadRequest(result.Errors);
+
+        return Ok("Password changed successfully");
     }
 }

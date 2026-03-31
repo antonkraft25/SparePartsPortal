@@ -7,6 +7,7 @@ import { CustomersList } from '../features/customers/customers-list/customers-li
 import { ResetPassword } from '../features/auth/reset-password/reset-password';
 import { Login } from '../features/auth/login/login';
 import { authGuard } from '../core/guards/core/guards/auth-guard';
+import { Profile } from '../features/profile/profile/profile';
 
 
 export const routes: Routes = [
@@ -17,5 +18,6 @@ export const routes: Routes = [
   {path: 'spareparts-list', component: SparepartsList, canActivate: [authGuard]},
   { path: 'products', component: ProductsList, canActivate: [authGuard] },
   { path: 'customers', component: CustomersList, canActivate: [authGuard] },
+  { path: 'profile', component: Profile, canActivate: [authGuard] },
   { path: '**', redirectTo: 'login' }
 ];

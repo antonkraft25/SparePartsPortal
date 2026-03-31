@@ -35,6 +35,18 @@ export class AccountService {
   }
 
   resetPassword(email: string, newPassword: string) {
-    return this.http.post(this.baseUrl + 'account/reset-password', { email, newPassword }, { responseType: 'text' });
+    return this.http.post(
+      this.baseUrl + 'account/reset-password',
+      { email, newPassword },
+      { responseType: 'text' },
+    );
+  }
+
+  updateProfile(dto: { firstName: string; lastName: string; email: string }) {
+    return this.http.put<User>(this.baseUrl + 'account/update-profile', dto);
+  }
+
+  changePassword(dto: { currentPassword: string; newPassword: string }) {
+    return this.http.put(this.baseUrl + 'account/change-password', dto, { responseType: 'text' });
   }
 }
