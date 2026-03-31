@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../../../core/services/account-service';
 import { ToastService } from '../../../core/services/toast-service';
+import { ValidationErrors } from '../../../shared/components/validation-errors/validation-errors';
 
 @Component({
   selector: 'app-reset-password',
-  imports: [FormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, ValidationErrors],
   templateUrl: './reset-password.html',
   styleUrl: './reset-password.css',
 })
@@ -15,28 +16,36 @@ export class ResetPassword {
   private router = inject(Router);
   private toast = inject(ToastService);
 
-  email = '';
-  newPassword = '';
-  confirmPassword = '';
+  form = new FormGroup(
+    {
+      email: new FormControl('', [Validators.required, Validators.email]),
+      newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
+      confirmPassword: new FormControl('', [Validators.required]),
+    },
+    { validators: this.passwordMatchValidator },
+  );
+
+  passwordMatchValidator(form: any) {
+    const newPassword = form.get('newPassword')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    return newPassword === confirmPassword ? null : { passwordMismatch: true };
+  }
 
   resetPassword() {
-    if (!this.email.trim() || !this.newPassword.trim()) {
-      this.toast.warning('Fyll i alla fält!');
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 
-    if (this.newPassword !== this.confirmPassword) {
-      this.toast.error('Lösenorden matchar inte!');
-      return;
-    }
+    const { email, newPassword } = this.form.value;
 
-    this.accountService.resetPassword(this.email, this.newPassword).subscribe({
+    this.accountService.resetPassword(email!, newPassword!).subscribe({
       next: () => {
         this.toast.success('Lösenordet har återställts!');
         this.router.navigateByUrl('/login');
       },
       error: (err) => {
-        this.toast.error(err.error?.title ?? err.error ?? 'Något gick fel!');
+        this.toast.error(err.error ?? 'Något gick fel!');
       },
     });
   }

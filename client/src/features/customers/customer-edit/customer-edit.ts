@@ -1,12 +1,14 @@
 import { Component, inject, output } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { CustomerService } from '../../../core/services/customer-service';
 import { Customer } from '../../../types/customer';
-import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../core/services/toast-service';
+import { ValidationErrors } from '../../../shared/components/validation-errors/validation-errors';
+import { AppValidators } from '../../../core/validators/app-validators';
 
 @Component({
   selector: 'app-customer-edit',
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule, ValidationErrors],
   templateUrl: './customer-edit.html',
   styleUrl: './customer-edit.css',
 })
@@ -16,19 +18,18 @@ export class CustomerEdit {
 
   isModalOpen = false;
   customer: Customer | null = null;
-  name = '';
-  city = '';
-  postalcode = '';
-  streetName = '';
-
   customerUpdated = output<Customer>();
 
+  form = new FormGroup({
+    name: new FormControl('', [Validators.required]),
+    city: new FormControl('', [Validators.required]),
+    postalcode: new FormControl('', [Validators.required, AppValidators.postalCode()]),
+    streetName: new FormControl('', [Validators.required]),
+  });
+
   openModal(customer: Customer) {
-    this.customer = { ...customer };
-    this.name = customer.name;
-    this.city = customer.city;
-    this.postalcode = customer.postalcode;
-    this.streetName = customer.streetName;
+    this.customer = customer;
+    this.form.patchValue(customer);
     this.isModalOpen = true;
   }
 
@@ -38,13 +39,12 @@ export class CustomerEdit {
   }
 
   saveCustomer() {
-    if (!this.customer) return;
-    this.customerService.updateCustomer(this.customer.id, {
-      name: this.name,
-      city: this.city,
-      postalcode: this.postalcode,
-      streetName: this.streetName
-    }).subscribe({
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    this.customerService.updateCustomer(this.customer!.id, this.form.value as any).subscribe({
       next: (updated) => {
         this.toastService.success('Kund uppdaterad!');
         this.customerUpdated.emit(updated);
@@ -52,8 +52,8 @@ export class CustomerEdit {
       },
       error: (err) => {
         this.toastService.error('Något gick fel vid uppdatering!');
-        console.error('Error updating customer:', err);
-      }
+        console.error(err);
+      },
     });
   }
 }

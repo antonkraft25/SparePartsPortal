@@ -16,27 +16,33 @@
       <h1 class="text-2xl font-bold text-center">Nordic Cooling Solutions AB</h1>
       <p class="text-center text-base-content/60">Logga in på ditt konto</p>
 
-      <div class="form-control">
-        <div class="label"><span class="label-text">Email</span></div>
-        <input
-          type="email"
-          class="input input-bordered w-full"
-          [(ngModel)]="creds.email"
-          placeholder="din@email.se"
-        />
-      </div>
+      <form [formGroup]="form" (ngSubmit)="login()">
+        <div class="form-control mb-3">
+          <div class="label"><span class="label-text">Email</span></div>
+          <input
+            type="email"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('email')?.touched && form.get('email')?.invalid"
+            formControlName="email"
+            placeholder="din@email.se"
+          />
+          <app-validation-errors [control]="form.get('email')" label="Email" />
+        </div>
 
-      <div class="form-control">
-        <div class="label"><span class="label-text">Lösenord</span></div>
-        <input
-          type="password"
-          class="input input-bordered w-full"
-          [(ngModel)]="creds.password"
-          placeholder="••••••••"
-        />
-      </div>
+        <div class="form-control mb-3">
+          <div class="label"><span class="label-text">Lösenord</span></div>
+          <input
+            type="password"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('password')?.touched && form.get('password')?.invalid"
+            formControlName="password"
+            placeholder="••••••••"
+          />
+          <app-validation-errors [control]="form.get('password')" label="Lösenord" />
+        </div>
 
-      <button class="btn btn-primary w-full mt-2" (click)="login()">Logga in</button>
+        <button type="submit" class="btn btn-primary w-full mt-2">Logga in</button>
+      </form>
 
       <div class="text-center">
         <a routerLink="/reset-password" class="link link-primary text-sm">Glömt lösenordet?</a>

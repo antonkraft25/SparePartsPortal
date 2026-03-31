@@ -3,38 +3,72 @@
     <div class="modal-box">
       <h3 class="font-bold text-lg mb-4">Redigera reservdel</h3>
 
-      <div class="flex flex-col gap-3">
-        <label class="form-control">
+      <form [formGroup]="form" (ngSubmit)="saveSparepart()">
+        <div class="form-control mb-3">
           <div class="label"><span class="label-text">Namn</span></div>
-          <input type="text" class="input input-bordered w-full" [(ngModel)]="sparepart.name" />
-        </label>
+          <input
+            type="text"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('name')?.touched && form.get('name')?.invalid"
+            formControlName="name"
+          />
+          <app-validation-errors [control]="form.get('name')" label="Namn" />
+        </div>
 
-        <label class="form-control">
+        <div class="form-control mb-3">
           <div class="label"><span class="label-text">Plats</span></div>
-          <input type="text" class="input input-bordered w-full" [(ngModel)]="sparepart.location" />
-        </label>
+          <input
+            type="text"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('location')?.touched && form.get('location')?.invalid"
+            formControlName="location"
+          />
+          <app-validation-errors [control]="form.get('location')" label="Plats" />
+        </div>
 
-        <label class="form-control">
+        <div class="form-control mb-3">
           <div class="label"><span class="label-text">Pris</span></div>
-          <input type="text" class="input input-bordered w-full" [(ngModel)]="sparepart.prize" />
-        </label>
+          <input
+            type="text"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('prize')?.touched && form.get('prize')?.invalid"
+            formControlName="prize"
+          />
+          <app-validation-errors [control]="form.get('prize')" label="Pris" />
+        </div>
 
-        <label class="form-control">
+        <div class="form-control mb-3">
           <div class="label"><span class="label-text">Inköpspris</span></div>
-          <input type="text" class="input input-bordered w-full" [(ngModel)]="sparepart.purchasePrize" />
-        </label>
+          <input
+            type="text"
+            class="input input-bordered w-full"
+            [class.input-error]="
+              form.get('purchasePrize')?.touched && form.get('purchasePrize')?.invalid
+            "
+            formControlName="purchasePrize"
+          />
+          <app-validation-errors [control]="form.get('purchasePrize')" label="Inköpspris" />
+        </div>
 
-        <label class="form-control">
+        <div class="form-control mb-3">
           <div class="label"><span class="label-text">Saldo</span></div>
-          <input type="number" class="input input-bordered w-full" [(ngModel)]="sparepart.balance" />
-        </label>
-      </div>
+          <input
+            type="number"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('balance')?.touched && form.get('balance')?.invalid"
+            formControlName="balance"
+          />
+          <app-validation-errors [control]="form.get('balance')" label="Saldo" />
+        </div>
 
-      <div class="modal-action">
-        <button class="btn btn-error" (click)="deactivateSparepart()">Spärra</button>
-        <button class="btn btn-primary" (click)="saveSparepart()">Spara</button>
-        <button class="btn" (click)="closeModal()">Stäng</button>
-      </div>
+        <div class="modal-action">
+          <button type="button" class="btn btn-error" (click)="deactivateSparepart()">
+            Ta bort
+          </button>
+          <button type="submit" class="btn btn-primary">Spara</button>
+          <button type="button" class="btn" (click)="closeModal()">Stäng</button>
+        </div>
+      </form>
     </div>
   </div>
 }

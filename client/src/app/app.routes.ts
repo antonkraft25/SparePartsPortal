@@ -6,7 +6,7 @@ import { ProductsList } from '../features/products/products-list/products-list';
 import { CustomersList } from '../features/customers/customers-list/customers-list';
 import { ResetPassword } from '../features/auth/reset-password/reset-password';
 import { Login } from '../features/auth/login/login';
-import { authGuard } from '../core/guards/core/guards/auth-guard';
+import { authGuard } from '../core/guards/auth-guard';
 import { Profile } from '../features/profile/profile/profile';
 
 

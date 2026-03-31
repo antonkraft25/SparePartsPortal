@@ -1,39 +1,51 @@
 import { Component, inject, output } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { SparepartService } from '../../../core/services/sparepart-service';
 import { ProductService } from '../../../core/services/product-service';
-import { Product } from '../../../types/product';
 import { Sparepart } from '../../../types/sparepart';
-import { FormsModule } from '@angular/forms';
+import { Product } from '../../../types/product';
 import { ToastService } from '../../../core/services/toast-service';
+import { ValidationErrors } from '../../../shared/components/validation-errors/validation-errors';
+import { AppValidators } from '../../../core/validators/app-validators';
 
 @Component({
   selector: 'app-sparepart-create',
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule, ValidationErrors],
   templateUrl: './sparepart-create.html',
   styleUrl: './sparepart-create.css',
 })
 export class SparepartCreate {
-  protected sparepartService = inject(SparepartService);
-  protected productService = inject(ProductService);
+  private sparepartService = inject(SparepartService);
+  private productService = inject(ProductService);
   private toastService = inject(ToastService);
-
 
   isModalOpen = false;
   currentStep = 1;
-
-  name = '';
-  location = '';
-  prize = '';
-  purchasePrize = '';
-  balance = 0;
-
   products: Product[] = [];
   selectedProductIds: string[] = [];
 
   sparepartCreated = output<Sparepart>();
 
+  form = new FormGroup({
+    name: new FormControl('', [Validators.required]),
+    location: new FormControl('', [Validators.required]),
+    prize: new FormControl('', [
+      Validators.required,
+      AppValidators.numeric(),
+      AppValidators.minValue(0),
+    ]),
+    purchasePrize: new FormControl('', [
+      Validators.required,
+      AppValidators.numeric(),
+      AppValidators.minValue(0),
+    ]),
+    balance: new FormControl(0, [Validators.required, AppValidators.minValue(0)]),
+  });
+
   openModal() {
-    this.resetForm();
+    this.form.reset({ balance: 0 });
+    this.selectedProductIds = [];
+    this.currentStep = 1;
     this.loadProducts();
     this.isModalOpen = true;
   }
@@ -43,7 +55,10 @@ export class SparepartCreate {
   }
 
   nextStep() {
-    if (!this.name.trim() || !this.location.trim() || !this.prize.trim() || !this.purchasePrize.trim()) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.currentStep = 2;
   }
 
@@ -53,7 +68,7 @@ export class SparepartCreate {
 
   toggleProduct(productId: string) {
     if (this.selectedProductIds.includes(productId)) {
-      this.selectedProductIds = this.selectedProductIds.filter(id => id !== productId);
+      this.selectedProductIds = this.selectedProductIds.filter((id) => id !== productId);
     } else {
       this.selectedProductIds = [...this.selectedProductIds, productId];
     }
@@ -65,40 +80,33 @@ export class SparepartCreate {
 
   loadProducts() {
     this.productService.getProducts().subscribe({
-      next: (data) => this.products = data,
-      error: (err) => console.error('Error loading products:', err)
+      next: (data) => (this.products = data),
+      error: (err) => console.error('Error loading products:', err),
     });
   }
 
   saveSparepart() {
-    if (!this.name.trim()) return;
-    this.sparepartService.createSparepart({
-      name: this.name,
-      location: this.location,
-      prize: this.prize,
-      purchasePrize: this.purchasePrize,
-      balance: this.balance,
-      productIds: this.selectedProductIds
-    }).subscribe({
-      next: (sparepart) => {
-        this.toastService.success('Reservdel skapad!');
-        this.sparepartCreated.emit(sparepart);
-        this.closeModal();
-      },
-      error: (err) => {
-        this.toastService.error('Något gick fel vid skapande!');
-        console.error('Error creating sparepart:', err);
-      }
-    });
-  }
+    if (this.form.invalid) return;
 
-  resetForm() {
-    this.currentStep = 1;
-    this.name = '';
-    this.location = '';
-    this.prize = '';
-    this.purchasePrize = '';
-    this.balance = 0;
-    this.selectedProductIds = [];
+    this.sparepartService
+      .createSparepart({
+        name: this.form.value.name!,
+        location: this.form.value.location!,
+        prize: this.form.value.prize!,
+        purchasePrize: this.form.value.purchasePrize!,
+        balance: this.form.value.balance!,
+        productIds: this.selectedProductIds,
+      })
+      .subscribe({
+        next: (sparepart) => {
+          this.toastService.success('Reservdel skapad!');
+          this.sparepartCreated.emit(sparepart);
+          this.closeModal();
+        },
+        error: (err) => {
+          this.toastService.error('Något gick fel vid skapande!');
+          console.error(err);
+        },
+      });
   }
 }

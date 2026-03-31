@@ -1,60 +1,87 @@
-import { Component, inject, Input, input, output } from '@angular/core';
+import { Component, inject, Input, output } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { SparepartService } from '../../../core/services/sparepart-service';
 import { Sparepart } from '../../../types/sparepart';
-import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../../core/services/toast-service';
+import { ValidationErrors } from '../../../shared/components/validation-errors/validation-errors';
+import { AppValidators } from '../../../core/validators/app-validators';
 
 @Component({
   selector: 'app-sparepart-details',
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule, ValidationErrors],
   templateUrl: './sparepart-details.html',
   styleUrl: './sparepart-details.css',
 })
 export class SparepartDetails {
-  protected sparepartService = inject(SparepartService);
+  private sparepartService = inject(SparepartService);
   private toastService = inject(ToastService);
-  @Input() sparepart: Sparepart | null = null;
+
   @Input() isModalOpen = false;
+  sparepart: Sparepart | null = null;
 
   sparepartSaved = output<Sparepart>();
   sparepartDeactivated = output<string>();
 
-  openModal (sparepart: Sparepart) {
-    this.sparepart = {...sparepart };
+  form = new FormGroup({
+    name: new FormControl('', [Validators.required]),
+    location: new FormControl('', [Validators.required]),
+    prize: new FormControl('', [
+      Validators.required,
+      AppValidators.numeric(),
+      AppValidators.minValue(0),
+    ]),
+    purchasePrize: new FormControl('', [
+      Validators.required,
+      AppValidators.numeric(),
+      AppValidators.minValue(0),
+    ]),
+    balance: new FormControl(0, [Validators.required, AppValidators.minValue(0)]),
+  });
+
+  openModal(sparepart: Sparepart) {
+    this.sparepart = { ...sparepart };
+    this.form.patchValue(sparepart);
     this.isModalOpen = true;
   }
 
-  closeModal(){
+  closeModal() {
     this.isModalOpen = false;
+    this.sparepart = null;
   }
 
   saveSparepart() {
-  if (!this.sparepart) return;
-  this.sparepartService.updateSparepart(this.sparepart).subscribe({
-    next: (updated) => {
-      this.toastService.success('Reservdel uppdaterad!');
-      this.sparepartSaved.emit(updated);
-      this.closeModal();
-    },
-    error: (err) => {
-      this.toastService.error('Något gick fel vid uppdatering!');
-      console.error('Error saving sparepart:', err);
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
     }
-  });
+
+    const updated = { ...this.sparepart!, ...this.form.value };
+
+    this.sparepartService.updateSparepart(updated as Sparepart).subscribe({
+      next: (result) => {
+        this.toastService.success('Reservdel uppdaterad!');
+        this.sparepartSaved.emit(result);
+        this.closeModal();
+      },
+      error: (err) => {
+        this.toastService.error('Något gick fel vid uppdatering!');
+        console.error(err);
+      },
+    });
   }
 
   deactivateSparepart() {
-  if (!this.sparepart) return;
-  this.sparepartService.deleteSparepart(this.sparepart.id).subscribe({
-    next: () => {
-      this.toastService.success('Reservdel borttagen!');
-      this.sparepartDeactivated.emit(this.sparepart!.id);
-      this.closeModal();
-    },
-    error: (err) => {
-      this.toastService.error('Något gick fel vid borttagning!');
-      console.error('Error deactivating sparepart:', err)
-    }
-  });
-}
+    if (!this.sparepart) return;
+    this.sparepartService.deleteSparepart(this.sparepart.id).subscribe({
+      next: () => {
+        this.toastService.success('Reservdel borttagen!');
+        this.sparepartDeactivated.emit(this.sparepart!.id);
+        this.closeModal();
+      },
+      error: (err) => {
+        this.toastService.error('Något gick fel vid borttagning!');
+        console.error(err);
+      },
+    });
+  }
 }

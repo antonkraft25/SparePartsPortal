@@ -1,58 +1,117 @@
 <div class="flex items-center justify-center min-h-screen w-full py-20">
   <div class="w-full max-w-lg px-3 flex flex-col gap-6">
-    <!-- Profile info -->
     <div class="card bg-base-100 shadow">
       <div class="card-body gap-4">
         <h2 class="card-title">Min profil</h2>
 
-        <div class="form-control">
-          <div class="label"><span class="label-text">Förnamn</span></div>
-          <input type="text" class="input input-bordered w-full" [(ngModel)]="firstName" />
-        </div>
+        <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+          <div class="form-control mb-3">
+            <div class="label"><span class="label-text">Förnamn</span></div>
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              [class.input-error]="
+                profileForm.get('firstName')?.touched && profileForm.get('firstName')?.invalid
+              "
+              formControlName="firstName"
+            />
+            <app-validation-errors [control]="profileForm.get('firstName')" label="Förnamn" />
+          </div>
 
-        <div class="form-control">
-          <div class="label"><span class="label-text">Efternamn</span></div>
-          <input type="text" class="input input-bordered w-full" [(ngModel)]="lastName" />
-        </div>
+          <div class="form-control mb-3">
+            <div class="label"><span class="label-text">Efternamn</span></div>
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              [class.input-error]="
+                profileForm.get('lastName')?.touched && profileForm.get('lastName')?.invalid
+              "
+              formControlName="lastName"
+            />
+            <app-validation-errors [control]="profileForm.get('lastName')" label="Efternamn" />
+          </div>
 
-        <div class="form-control">
-          <div class="label"><span class="label-text">Email</span></div>
-          <input type="email" class="input input-bordered w-full" [(ngModel)]="email" />
-        </div>
+          <div class="form-control mb-3">
+            <div class="label"><span class="label-text">Email</span></div>
+            <input
+              type="email"
+              class="input input-bordered w-full"
+              [class.input-error]="
+                profileForm.get('email')?.touched && profileForm.get('email')?.invalid
+              "
+              formControlName="email"
+            />
+            <app-validation-errors [control]="profileForm.get('email')" label="Email" />
+          </div>
 
-        <button class="btn btn-primary w-full" (click)="updateProfile()">Spara ändringar</button>
+          <button type="submit" class="btn btn-primary w-full">Spara ändringar</button>
+        </form>
       </div>
     </div>
 
-    <!-- Change password -->
     <div class="card bg-base-100 shadow">
       <div class="card-body gap-4">
         <h2 class="card-title">Byt lösenord</h2>
 
-        <div class="form-control">
-          <div class="label"><span class="label-text">Nuvarande lösenord</span></div>
-          <input
-            type="password"
-            class="input input-bordered w-full"
-            [(ngModel)]="currentPassword"
-          />
-        </div>
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+          <div class="form-control mb-3">
+            <div class="label"><span class="label-text">Nuvarande lösenord</span></div>
+            <input
+              type="password"
+              class="input input-bordered w-full"
+              [class.input-error]="
+                passwordForm.get('currentPassword')?.touched &&
+                passwordForm.get('currentPassword')?.invalid
+              "
+              formControlName="currentPassword"
+            />
+            <app-validation-errors
+              [control]="passwordForm.get('currentPassword')"
+              label="Nuvarande lösenord"
+            />
+          </div>
 
-        <div class="form-control">
-          <div class="label"><span class="label-text">Nytt lösenord</span></div>
-          <input type="password" class="input input-bordered w-full" [(ngModel)]="newPassword" />
-        </div>
+          <div class="form-control mb-3">
+            <div class="label"><span class="label-text">Nytt lösenord</span></div>
+            <input
+              type="password"
+              class="input input-bordered w-full"
+              [class.input-error]="
+                passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.invalid
+              "
+              formControlName="newPassword"
+            />
+            <app-validation-errors
+              [control]="passwordForm.get('newPassword')"
+              label="Nytt lösenord"
+            />
+          </div>
 
-        <div class="form-control">
-          <div class="label"><span class="label-text">Bekräfta nytt lösenord</span></div>
-          <input
-            type="password"
-            class="input input-bordered w-full"
-            [(ngModel)]="confirmPassword"
-          />
-        </div>
+          <div class="form-control mb-3">
+            <div class="label"><span class="label-text">Bekräfta nytt lösenord</span></div>
+            <input
+              type="password"
+              class="input input-bordered w-full"
+              [class.input-error]="
+                passwordForm.get('confirmPassword')?.touched &&
+                passwordForm.get('confirmPassword')?.invalid
+              "
+              formControlName="confirmPassword"
+            />
+            <app-validation-errors
+              [control]="passwordForm.get('confirmPassword')"
+              label="Bekräfta lösenord"
+            />
+            @if (
+              passwordForm.errors?.['passwordMismatch'] &&
+              passwordForm.get('confirmPassword')?.touched
+            ) {
+              <span class="text-error text-xs mt-1">Lösenorden matchar inte</span>
+            }
+          </div>
 
-        <button class="btn btn-primary w-full" (click)="changePassword()">Byt lösenord</button>
+          <button type="submit" class="btn btn-primary w-full">Byt lösenord</button>
+        </form>
       </div>
     </div>
   </div>
