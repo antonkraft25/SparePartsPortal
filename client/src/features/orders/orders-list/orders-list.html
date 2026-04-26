@@ -21,7 +21,7 @@
             </tr>
           } @else {
             @for (order of orders; track order.id) {
-              <tr class="cursor-pointer hover" (click)="toggleExpand(order.id)">
+              <tr class="cursor-pointer hover" [routerLink]="['/orders', order.id]">
                 <td class="font-mono text-xs">{{ order.id.slice(0, 8) }}...</td>
                 <td>{{ order.orderDate | date: 'yyyy-MM-dd HH:mm' }}</td>
                 <td>{{ order.userName }}</td>

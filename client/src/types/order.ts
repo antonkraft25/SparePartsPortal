@@ -1,7 +1,9 @@
 export type OrderItem = {
     sparepartId: string;
     sparepartName: string;
+    sparepartLocation: string;
     quantity: number;
+    quantitySent: number;
 }
 
 export type Order = {

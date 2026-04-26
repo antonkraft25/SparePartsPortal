@@ -20,12 +20,13 @@ public class Seeder
         if (!await context.Statuses.AnyAsync())
         {
             var statuses = new List<Status>
-            {
+{
                 new() { Id = "1", Name = "Pending" },
                 new() { Id = "2", Name = "Confirmed" },
                 new() { Id = "3", Name = "Shipped" },
                 new() { Id = "4", Name = "Delivered" },
-                new() { Id = "5", Name = "Cancelled" }
+                new() { Id = "5", Name = "Cancelled" },
+                new() { Id = "6", Name = "Partially Delivered" }
             };
             await context.Statuses.AddRangeAsync(statuses);
             await context.SaveChangesAsync();

@@ -17,4 +17,12 @@ export class OrderService {
   createOrder(order: { deliveryAddress: any; items: { sparepartId: string; quantity: number }[] }) {
     return this.http.post<Order>(this.baseUrl + 'order', order);
   }
+
+  getOrder(id: string) {
+    return this.http.get<Order>(this.baseUrl + 'order/' + id);
+  }
+
+  shipOrder(id: string, items: { sparepartId: string; quantity: number }[]) {
+    return this.http.put(this.baseUrl + 'order/' + id + '/ship', items);
+  }
 }

@@ -2,10 +2,11 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { OrderService } from '../../../core/services/order-service';
 import { Order } from '../../../types/order';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-orders-list',
-  imports: [DatePipe],
+  imports: [DatePipe, RouterLink],
   templateUrl: './orders-list.html',
   styleUrl: './orders-list.css',
 })
@@ -14,7 +15,6 @@ export class OrdersList implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   orders: Order[] = [];
-  expandedOrderId: string | null = null;
 
   ngOnInit(): void {
     this.loadOrders();
@@ -28,9 +28,5 @@ export class OrdersList implements OnInit {
       },
       error: (err) => console.error('Error loading orders:', err),
     });
-  }
-
-  toggleExpand(orderId: string) {
-    this.expandedOrderId = this.expandedOrderId === orderId ? null : orderId;
   }
 }

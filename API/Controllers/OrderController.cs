@@ -87,8 +87,87 @@ public class OrderController(
             {
                 SparepartId = os.SparepartId,
                 SparepartName = os.Sparepart.Name,
-                Quantity = os.Quantity
+                Quantity = os.Quantity,
+                QuantitySent = os.QuantitySent,
+                SparepartLocation = os.Sparepart.Location
             }).ToList()
         }));
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<OrderDto>> GetOrder(string id)
+    {
+        var order = await context.Orders
+            .Include(o => o.Status)
+            .Include(o => o.DeliveryAddress)
+            .Include(o => o.User)
+            .Include(o => o.OrderSpareparts)
+                .ThenInclude(os => os.Sparepart)
+            .FirstOrDefaultAsync(o => o.Id == id);
+
+        if (order == null) return NotFound();
+
+        return Ok(new OrderDto
+        {
+            Id = order.Id,
+            OrderDate = order.OrderDate,
+            Status = order.Status.Name,
+            UserName = $"{order.User.FirstName} {order.User.LastName}",
+            DeliveryAddress = new DeliveryAddressDto
+            {
+                StreetName = order.DeliveryAddress.StreetName,
+                City = order.DeliveryAddress.City,
+                Postalcode = order.DeliveryAddress.Postalcode
+            },
+            Items = order.OrderSpareparts.Select(os => new OrderItemResultDto
+            {
+                SparepartId = os.SparepartId,
+                SparepartName = os.Sparepart.Name,
+                SparepartLocation = os.Sparepart.Location,
+                Quantity = os.Quantity,
+                QuantitySent = os.QuantitySent
+            }).ToList()
+        });
+    }
+
+    [HttpPut("{id}/ship")]
+    public async Task<ActionResult> ShipOrder(string id, List<OrderItemDto> items)
+    {
+        var order = await context.Orders
+            .Include(o => o.OrderSpareparts)
+                .ThenInclude(os => os.Sparepart)
+            .Include(o => o.Status)
+            .FirstOrDefaultAsync(o => o.Id == id);
+
+        if (order == null) return NotFound();
+
+        foreach (var item in items)
+        {
+            var orderSparepart = order.OrderSpareparts
+                .FirstOrDefault(os => os.SparepartId == item.SparepartId);
+
+            if (orderSparepart == null) continue;
+
+            var quantityToSend = Math.Min(item.Quantity, orderSparepart.Quantity - orderSparepart.QuantitySent);
+            orderSparepart.QuantitySent += quantityToSend;
+            orderSparepart.Sparepart.Balance -= quantityToSend;
+        }
+
+        bool fullyShipped = order.OrderSpareparts.All(os => os.QuantitySent >= os.Quantity);
+        bool partiallyShipped = order.OrderSpareparts.Any(os => os.QuantitySent > 0);
+
+        if (fullyShipped)
+        {
+            var deliveredStatus = await context.Statuses.FirstOrDefaultAsync(s => s.Name == "Delivered");
+            if (deliveredStatus != null) order.StatusId = deliveredStatus.Id;
+        }
+        else if (partiallyShipped)
+        {
+            var partialStatus = await context.Statuses.FirstOrDefaultAsync(s => s.Name == "Partially Delivered");
+            if (partialStatus != null) order.StatusId = partialStatus.Id;
+        }
+
+        await context.SaveChangesAsync();
+        return Ok();
     }
 }

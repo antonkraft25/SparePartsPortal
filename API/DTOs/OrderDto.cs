@@ -14,5 +14,7 @@ public class OrderItemResultDto
 {
     public required string SparepartId { get; set; }
     public required string SparepartName { get; set; }
+    public required string SparepartLocation { get; set; }
     public int Quantity { get; set; }
+    public int QuantitySent { get; set; }
 }
