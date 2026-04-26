@@ -71,5 +71,20 @@ namespace API.Controllers
                 streetName = customer.StreetName
             });
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult> GetCustomer(string id)
+        {
+            var customer = await repository.GetByIdAsync(id);
+            if (customer == null) return NotFound();
+            return Ok(new
+            {
+                id = customer.Id,
+                name = customer.Name,
+                city = customer.City,
+                postalcode = customer.Postalcode,
+                streetName = customer.StreetName
+            });
+        }
     }
 }

@@ -1,0 +1,26 @@
+<div class="flex items-center gap-2">
+  <button
+    type="button"
+    class="btn btn-sm btn-outline btn-square"
+    (click)="decrement()"
+    [disabled]="quantity <= min"
+  >
+    −
+  </button>
+  <input
+    type="number"
+    class="input input-sm input-bordered w-16 text-center"
+    [value]="quantity"
+    (change)="onInputChange($event)"
+    [min]="min"
+    [max]="max"
+  />
+  <button
+    type="button"
+    class="btn btn-sm btn-outline btn-square"
+    (click)="increment()"
+    [disabled]="quantity >= max"
+  >
+    +
+  </button>
+</div>

@@ -38,7 +38,8 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
             Email = user.Email!,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Token = await tokenService.CreateToken(user)
+            Token = await tokenService.CreateToken(user),
+            CustomerId = user.CustomerId
         });
     }
 
@@ -60,7 +61,8 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
             Email = user.Email!,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Token = await tokenService.CreateToken(user)
+            Token = await tokenService.CreateToken(user),
+            CustomerId = user.CustomerId
         });
     }
 
@@ -102,7 +104,8 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
             Email = user.Email!,
             FirstName = user.FirstName,
             LastName = user.LastName,
-            Token = await tokenService.CreateToken(user)
+            Token = await tokenService.CreateToken(user),
+            CustomerId = user.CustomerId
         });
     }
 

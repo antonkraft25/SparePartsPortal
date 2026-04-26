@@ -8,6 +8,7 @@ import { ResetPassword } from '../features/auth/reset-password/reset-password';
 import { Login } from '../features/auth/login/login';
 import { authGuard } from '../core/guards/auth-guard';
 import { Profile } from '../features/profile/profile/profile';
+import { OrderNew } from '../features/orders/order-new/order-new';
 
 
 export const routes: Routes = [
@@ -19,5 +20,6 @@ export const routes: Routes = [
   { path: 'products', component: ProductsList, canActivate: [authGuard] },
   { path: 'customers', component: CustomersList, canActivate: [authGuard] },
   { path: 'profile', component: Profile, canActivate: [authGuard] },
+  { path: 'order/new', component: OrderNew, canActivate: [authGuard] },
   { path: '**', redirectTo: 'login' }
 ];

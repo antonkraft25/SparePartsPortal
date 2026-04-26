@@ -21,4 +21,8 @@ export class CustomerService {
   updateCustomer(id: string, dto: Omit<Customer, 'id'>) {
     return this.http.put<Customer>(this.baseUrl + 'customer/' + id, dto);
   }
+
+  getCustomer(id: string) {
+    return this.http.get<Customer>(this.baseUrl + 'customer/' + id);
+  }
 }

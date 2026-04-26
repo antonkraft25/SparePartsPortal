@@ -70,5 +70,13 @@
         </div>
       }
     </div>
+    @if (accountService.currentUser()) {
+      <a routerLink="/order/new" class="btn btn-ghost text-white gap-2">
+        🛒
+        @if (cartService.totalItems() > 0) {
+          <span class="badge badge-primary">{{ cartService.totalItems() }}</span>
+        }
+      </a>
+    }
   </div>
 </header>

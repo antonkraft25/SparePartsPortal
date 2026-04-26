@@ -4,6 +4,7 @@ export type User = {
     lastName: string
     email: string;
     token: string;
+    customerId: string;
 }
 
 export type LoginCreds = {

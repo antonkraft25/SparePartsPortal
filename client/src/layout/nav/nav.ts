@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AccountService } from '../../core/services/account-service';
 import { ToastService } from '../../core/services/toast-service';
 import { themes } from '../theme';
+import { CartService } from '../../core/services/cart-service';
 
 @Component({
   standalone: true,
@@ -16,6 +17,7 @@ export class Nav implements OnInit {
   protected accountService = inject(AccountService);
   private router = inject(Router);
   private toast = inject(ToastService);
+  protected cartService = inject(CartService);
   protected creds: any = {};
   protected selectedTheme = signal<string>(localStorage.getItem('theme') || 'light')
   protected themes = themes;

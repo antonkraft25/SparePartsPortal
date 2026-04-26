@@ -1,0 +1,100 @@
+<div class="flex items-center justify-center min-h-screen w-full py-20">
+  <div class="w-full max-w-3xl px-6 flex flex-col gap-6">
+    <h1 class="text-2xl font-bold">Ny beställning</h1>
+
+    <div class="card bg-base-100 shadow">
+      <div class="card-body">
+        <h2 class="card-title">Varukorg</h2>
+
+        @if (cartService.items().length === 0) {
+          <p class="text-base-content/50">Varukorgen är tom</p>
+        } @else {
+          <div class="overflow-x-auto">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Reservdel</th>
+                  <th>Pris</th>
+                  <th>Antal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of cartService.items(); track item.sparepart.id) {
+                  <tr>
+                    <td>{{ item.sparepart.name }}</td>
+                    <td>{{ item.sparepart.prize }}</td>
+                    <td>
+                      <app-quantity-control
+                        [quantity]="item.quantity"
+                        [min]="1"
+                        [max]="item.sparepart.balance"
+                        (quantityChange)="updateQuantity(item.sparepart.id, $event)"
+                      />
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-sm btn-error btn-outline"
+                        (click)="removeItem(item.sparepart.id)"
+                      >
+                        Ta bort
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Delivery address -->
+    <div class="card bg-base-100 shadow">
+      <div class="card-body">
+        <h2 class="card-title">Leveransadress</h2>
+
+        <form [formGroup]="form" (ngSubmit)="placeOrder()">
+          <div class="form-control mb-3">
+            <div class="label"><span class="label-text">Gatuadress</span></div>
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              [class.input-error]="
+                form.get('streetName')?.touched && form.get('streetName')?.invalid
+              "
+              formControlName="streetName"
+            />
+            <app-validation-errors [control]="form.get('streetName')" label="Gatuadress" />
+          </div>
+
+          <div class="form-control mb-3">
+            <div class="label"><span class="label-text">Stad</span></div>
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              [class.input-error]="form.get('city')?.touched && form.get('city')?.invalid"
+              formControlName="city"
+            />
+            <app-validation-errors [control]="form.get('city')" label="Stad" />
+          </div>
+
+          <div class="form-control mb-3">
+            <div class="label"><span class="label-text">Postnummer</span></div>
+            <input
+              type="text"
+              class="input input-bordered w-full"
+              [class.input-error]="
+                form.get('postalcode')?.touched && form.get('postalcode')?.invalid
+              "
+              formControlName="postalcode"
+            />
+            <app-validation-errors [control]="form.get('postalcode')" label="Postnummer" />
+          </div>
+
+          <button type="submit" class="btn btn-primary w-full">Lägg order</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,25 +1,36 @@
 <div class="flex items-center justify-center min-h-screen w-full py-20">
-  <div class="w-2/3 z-40 px-3 py-1">
-    <div class="flex justify-end mb-3 gap-2">
-      <button class="btn btn-primary" (click)="createComp.openModal()">Skapa reservdel</button>
-      <a routerLink="/products" class="btn btn-outline">Visa produkter</a>
+  <div class="w-full px-6">
+    <div class="flex justify-between mb-3">
+      <div class="flex gap-2">
+        <button class="btn btn-primary" (click)="createComp.openModal()">Skapa reservdel</button>
+        <a routerLink="/products" class="btn btn-outline">Visa produkter</a>
+      </div>
+      <a routerLink="/order/new" class="btn btn-outline gap-2">
+        🛒 Varukorg
+        @if (cartService.totalItems() > 0) {
+          <span class="badge badge-primary">{{ cartService.totalItems() }}</span>
+        }
+      </a>
     </div>
 
-    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-200 flex">
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
       <table class="table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>Prize</th>
-            <th>Purchase prize</th>
-            <th>Balance</th>
+            <th>Namn</th>
+            <th>Plats</th>
+            <th>Pris</th>
+            <th>Inköpspris</th>
+            <th>Saldo</th>
+            <th>Antal</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           @if (spareparts.length === 0) {
             <tr>
-              <td colspan="6" class="text-center">Laddar...</td>
+              <td colspan="8" class="text-center">Laddar...</td>
             </tr>
           } @else {
             @for (sparepart of spareparts; track sparepart.id) {
@@ -30,8 +41,21 @@
                 <td>{{ sparepart.purchasePrize }}</td>
                 <td>{{ sparepart.balance }}</td>
                 <td>
+                  <app-quantity-control
+                    [quantity]="quantities[sparepart.id]"
+                    [min]="0"
+                    [max]="sparepart.balance"
+                    (quantityChange)="onQuantityChange(sparepart.id, $event)"
+                  />
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-primary" (click)="addToCart(sparepart)">
+                    Lägg i varukorg
+                  </button>
+                </td>
+                <td>
                   <button
-                    class="btn btn-outline btn-secondary"
+                    class="btn btn-outline btn-secondary btn-sm"
                     (click)="detailsComp.openModal(sparepart)"
                   >
                     Redigera
@@ -46,8 +70,9 @@
   </div>
 </div>
 
-<app-sparepart-details #detailsComp 
-  (sparepartSaved)="onSparepartSaved($event)" 
-  (sparepartDeactivated)="onSparepartDeactivated($event)" />
+<app-sparepart-details
+  #detailsComp
+  (sparepartSaved)="onSparepartSaved($event)"
+  (sparepartDeactivated)="onSparepartDeactivated($event)"
+/>
 <app-sparepart-create #createComp (sparepartCreated)="onSparepartCreated($event)" />
-
