@@ -8,7 +8,7 @@ export const themes = [
     "synthwave",
     "retro",
     "valentine",
-    "halloween",
+    "halloween", 
     "garden",
     "forest",
     "aqua",

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
+import { Order } from '../../types/order';
 
 @Injectable({
   providedIn: 'root',
@@ -9,10 +10,11 @@ export class OrderService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  createOrder(order: {
-    deliveryAddress: any,
-    items: { sparepartId: string, quantity: number }[]
-  }) {
-    return this.http.post(this.baseUrl + 'order', order);
+  getOrders() {
+    return this.http.get<Order[]>(this.baseUrl + 'order');
+  }
+
+  createOrder(order: { deliveryAddress: any; items: { sparepartId: string; quantity: number }[] }) {
+    return this.http.post<Order>(this.baseUrl + 'order', order);
   }
 }

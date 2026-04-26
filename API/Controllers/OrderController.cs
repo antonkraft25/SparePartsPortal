@@ -58,4 +58,37 @@ public class OrderController(
 
         return Ok(new { id = order.Id });
     }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
+    {
+        var orders = await context.Orders
+            .Include(o => o.Status)
+            .Include(o => o.DeliveryAddress)
+            .Include(o => o.User)
+            .Include(o => o.OrderSpareparts)
+                .ThenInclude(os => os.Sparepart)
+            .OrderByDescending(o => o.OrderDate)
+            .ToListAsync();
+
+        return Ok(orders.Select(o => new OrderDto
+        {
+            Id = o.Id,
+            OrderDate = o.OrderDate,
+            Status = o.Status.Name,
+            UserName = $"{o.User.FirstName} {o.User.LastName}",
+            DeliveryAddress = new DeliveryAddressDto
+            {
+                StreetName = o.DeliveryAddress.StreetName,
+                City = o.DeliveryAddress.City,
+                Postalcode = o.DeliveryAddress.Postalcode
+            },
+            Items = o.OrderSpareparts.Select(os => new OrderItemResultDto
+            {
+                SparepartId = os.SparepartId,
+                SparepartName = os.Sparepart.Name,
+                Quantity = os.Quantity
+            }).ToList()
+        }));
+    }
 }

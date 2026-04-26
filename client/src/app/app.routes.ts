@@ -9,6 +9,7 @@ import { Login } from '../features/auth/login/login';
 import { authGuard } from '../core/guards/auth-guard';
 import { Profile } from '../features/profile/profile/profile';
 import { OrderNew } from '../features/orders/order-new/order-new';
+import { OrdersList } from '../features/orders/orders-list/orders-list';
 
 
 export const routes: Routes = [
@@ -21,5 +22,6 @@ export const routes: Routes = [
   { path: 'customers', component: CustomersList, canActivate: [authGuard] },
   { path: 'profile', component: Profile, canActivate: [authGuard] },
   { path: 'order/new', component: OrderNew, canActivate: [authGuard] },
+  { path: 'orders', component: OrdersList, canActivate: [authGuard] },
   { path: '**', redirectTo: 'login' }
 ];
