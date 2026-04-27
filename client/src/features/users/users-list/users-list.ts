@@ -1,9 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { UserService } from '../../../core/services/user-service';
+import { UserCreate } from '../user-create/user-create';
+import { UserList } from '../../../types/userList';
 
 @Component({
   selector: 'app-users-list',
-  imports: [],
+  imports: [UserCreate],
   templateUrl: './users-list.html',
   styleUrl: './users-list.css',
 })
-export class UsersList {}
+export class UsersList implements OnInit {
+  private userService = inject(UserService);
+  private cdr = inject(ChangeDetectorRef);
+  users: UserList[] = [];
+
+  ngOnInit(): void {
+    this.loadUsers();
+  }
+
+  loadUsers() {
+    this.userService.getUsers().subscribe({
+      next: (data) => {
+        this.users = data;
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Error loading users:', err)
+    });
+  }
+
+  onUserCreated() {
+    this.loadUsers();
+  }
+}

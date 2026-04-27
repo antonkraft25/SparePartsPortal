@@ -1,1 +1,90 @@
-<p>user-create works!</p>
+@if (isModalOpen) {
+  <div class="modal modal-open">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg mb-4">Lägg till användare</h3>
+
+      <form [formGroup]="form" (ngSubmit)="saveUser()">
+        <div class="form-control mb-3">
+          <div class="label"><span class="label-text">Förnamn</span></div>
+          <input
+            type="text"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('firstName')?.touched && form.get('firstName')?.invalid"
+            formControlName="firstName"
+          />
+          <app-validation-errors [control]="form.get('firstName')" label="Förnamn" />
+        </div>
+
+        <div class="form-control mb-3">
+          <div class="label"><span class="label-text">Efternamn</span></div>
+          <input
+            type="text"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('lastName')?.touched && form.get('lastName')?.invalid"
+            formControlName="lastName"
+          />
+          <app-validation-errors [control]="form.get('lastName')" label="Efternamn" />
+        </div>
+
+        <div class="form-control mb-3">
+          <div class="label"><span class="label-text">Email</span></div>
+          <input
+            type="email"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('email')?.touched && form.get('email')?.invalid"
+            formControlName="email"
+          />
+          <app-validation-errors [control]="form.get('email')" label="Email" />
+        </div>
+
+        <div class="form-control mb-3">
+          <div class="label"><span class="label-text">Lösenord</span></div>
+          <input
+            type="password"
+            class="input input-bordered w-full"
+            [class.input-error]="form.get('password')?.touched && form.get('password')?.invalid"
+            formControlName="password"
+          />
+          <app-validation-errors [control]="form.get('password')" label="Lösenord" />
+        </div>
+
+        <div class="form-control mb-3">
+          <div class="label"><span class="label-text">Kund</span></div>
+          <select
+            class="select select-bordered w-full"
+            [class.select-error]="
+              form.get('customerId')?.touched && form.get('customerId')?.invalid
+            "
+            formControlName="customerId"
+          >
+            <option value="">Välj kund...</option>
+            @for (customer of customers; track customer.id) {
+              <option [value]="customer.id">{{ customer.name }}</option>
+            }
+          </select>
+          <app-validation-errors [control]="form.get('customerId')" label="Kund" />
+        </div>
+
+        <div class="form-control mb-3">
+          <div class="label"><span class="label-text">Roll</span></div>
+          <select
+            class="select select-bordered w-full"
+            [class.select-error]="form.get('role')?.touched && form.get('role')?.invalid"
+            formControlName="role"
+          >
+            <option value="">Välj roll...</option>
+            @for (role of roles; track role) {
+              <option [value]="role">{{ role }}</option>
+            }
+          </select>
+          <app-validation-errors [control]="form.get('role')" label="Roll" />
+        </div>
+
+        <div class="modal-action">
+          <button type="submit" class="btn btn-primary">Skapa</button>
+          <button type="button" class="btn" (click)="closeModal()">Stäng</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
