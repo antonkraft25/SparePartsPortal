@@ -11,6 +11,7 @@ import { Profile } from '../features/profile/profile/profile';
 import { OrderNew } from '../features/orders/order-new/order-new';
 import { OrdersList } from '../features/orders/orders-list/orders-list';
 import { OrderDetail } from '../features/orders/order-detail/order-detail';
+import { UsersList } from '../features/users/users-list/users-list';
 
 
 export const routes: Routes = [
@@ -25,5 +26,6 @@ export const routes: Routes = [
   { path: 'order/new', component: OrderNew, canActivate: [authGuard] },
   { path: 'orders', component: OrdersList, canActivate: [authGuard] },
   { path: 'orders/:id', component: OrderDetail, canActivate: [authGuard] },
+  { path: 'users', component: UsersList, canActivate: [authGuard] },
   { path: '**', redirectTo: 'login' }
 ];
