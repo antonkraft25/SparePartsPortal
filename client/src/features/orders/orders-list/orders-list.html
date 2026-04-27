@@ -11,13 +11,12 @@
             <th>Användare</th>
             <th>Leveransadress</th>
             <th>Status</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
           @if (orders.length === 0) {
             <tr>
-              <td colspan="6" class="text-center">Inga ordrar hittades</td>
+              <td colspan="5" class="text-center">Inga ordrar hittades</td>
             </tr>
           } @else {
             @for (order of orders; track order.id) {
@@ -29,34 +28,7 @@
                 <td>
                   <span class="badge badge-outline">{{ order.status }}</span>
                 </td>
-                <td>
-                  <span class="text-xs text-base-content/50">
-                    {{ expandedOrderId === order.id ? '▲ Dölj' : '▼ Visa' }} rader
-                  </span>
-                </td>
               </tr>
-              @if (expandedOrderId === order.id) {
-                <tr>
-                  <td colspan="6" class="bg-base-200 px-6 py-3">
-                    <table class="table table-sm">
-                      <thead>
-                        <tr>
-                          <th>Reservdel</th>
-                          <th>Antal</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (item of order.items; track item.sparepartId) {
-                          <tr>
-                            <td>{{ item.sparepartName }}</td>
-                            <td>{{ item.quantity }}</td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              }
             }
           }
         </tbody>
