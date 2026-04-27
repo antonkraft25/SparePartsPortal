@@ -3,6 +3,7 @@ export type UserList = {
     firstName: string;
     lastName: string;
     email: string;
+    customerId: string;
     customerName: string;
     role: string;
 }

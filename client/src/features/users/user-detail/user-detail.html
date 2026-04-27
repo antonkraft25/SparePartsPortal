@@ -1,0 +1,94 @@
+<div class="flex items-center justify-center min-h-screen w-full py-20">
+  <div class="w-full max-w-lg px-6">
+    @if (user) {
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">{{ user.firstName }} {{ user.lastName }}</h1>
+        <span class="badge badge-outline">{{ user.role }}</span>
+      </div>
+
+      <div class="card bg-base-100 shadow">
+        <div class="card-body gap-4">
+          <h2 class="card-title">Användarinformation</h2>
+
+          <form [formGroup]="form" (ngSubmit)="saveUser()">
+            <div class="form-control mb-3">
+              <div class="label"><span class="label-text">Förnamn</span></div>
+              <input
+                type="text"
+                class="input input-bordered w-full"
+                [class.input-error]="
+                  form.get('firstName')?.touched && form.get('firstName')?.invalid
+                "
+                formControlName="firstName"
+              />
+              <app-validation-errors [control]="form.get('firstName')" label="Förnamn" />
+            </div>
+
+            <div class="form-control mb-3">
+              <div class="label"><span class="label-text">Efternamn</span></div>
+              <input
+                type="text"
+                class="input input-bordered w-full"
+                [class.input-error]="form.get('lastName')?.touched && form.get('lastName')?.invalid"
+                formControlName="lastName"
+              />
+              <app-validation-errors [control]="form.get('lastName')" label="Efternamn" />
+            </div>
+
+            <div class="form-control mb-3">
+              <div class="label"><span class="label-text">Email</span></div>
+              <input
+                type="email"
+                class="input input-bordered w-full"
+                [class.input-error]="form.get('email')?.touched && form.get('email')?.invalid"
+                formControlName="email"
+              />
+              <app-validation-errors [control]="form.get('email')" label="Email" />
+            </div>
+
+            <div class="form-control mb-3">
+              <div class="label"><span class="label-text">Kund</span></div>
+              <select
+                class="select select-bordered w-full"
+                [class.select-error]="
+                  form.get('customerId')?.touched && form.get('customerId')?.invalid
+                "
+                formControlName="customerId"
+              >
+                <option value="">Välj kund...</option>
+                @for (customer of customers; track customer.id) {
+                  <option [value]="customer.id">{{ customer.name }}</option>
+                }
+              </select>
+              <app-validation-errors [control]="form.get('customerId')" label="Kund" />
+            </div>
+
+            <div class="form-control mb-3">
+              <div class="label"><span class="label-text">Roll</span></div>
+              <select
+                class="select select-bordered w-full"
+                [class.select-error]="form.get('role')?.touched && form.get('role')?.invalid"
+                formControlName="role"
+              >
+                <option value="">Välj roll...</option>
+                @for (role of roles; track role) {
+                  <option [value]="role">{{ role }}</option>
+                }
+              </select>
+              <app-validation-errors [control]="form.get('role')" label="Roll" />
+            </div>
+
+            <div class="flex gap-3 mt-4">
+              <button type="submit" class="btn btn-primary flex-1">Spara ändringar</button>
+              <button type="button" class="btn btn-error" (click)="disableUser()">
+                Inaktivera
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    } @else {
+      <p class="text-center">Laddar användare...</p>
+    }
+  </div>
+</div>

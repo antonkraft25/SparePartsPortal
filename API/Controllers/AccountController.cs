@@ -51,6 +51,8 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
 
         if (user == null) return Unauthorized("Invalid email or password");
 
+        if (!user.IsActive) return Unauthorized("This account has been disabled");
+
         var result = await userManager.CheckPasswordAsync(user, loginDto.Password);
 
         if (!result) return Unauthorized("Invalid email or password");

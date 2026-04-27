@@ -19,6 +19,7 @@ public class UserController(
     {
         var users = await userManager.Users
             .Include(u => u.Customer)
+            .Where(u => u.IsActive)
             .ToListAsync();
 
         var result = new List<UserListDto>();
@@ -32,6 +33,7 @@ public class UserController(
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email!,
+                CustomerId = user.CustomerId,
                 CustomerName = user.Customer.Name,
                 Role = roles.FirstOrDefault() ?? "Ingen roll"
             });
@@ -59,6 +61,72 @@ public class UserController(
         if (!result.Succeeded) return BadRequest(result.Errors);
 
         await userManager.AddToRoleAsync(user, dto.Role);
+
+        return Ok();
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<UserListDto>> GetUser(string id)
+    {
+        var user = await userManager.Users
+            .Include(u => u.Customer)
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null) return NotFound();
+
+        var roles = await userManager.GetRolesAsync(user);
+
+        return Ok(new UserListDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email!,
+            CustomerId = user.CustomerId,
+            CustomerName = user.Customer.Name,
+            Role = roles.FirstOrDefault() ?? "Ingen roll"
+        });
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult> UpdateUser(string id, UpdateUserDto dto)
+    {
+        var user = await userManager.Users
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null) return NotFound();
+
+        user.FirstName = dto.FirstName;
+        user.LastName = dto.LastName;
+        user.Email = dto.Email;
+        user.UserName = dto.Email;
+        user.NormalizedEmail = dto.Email.ToUpper();
+        user.NormalizedUserName = dto.Email.ToUpper();
+        user.CustomerId = dto.CustomerId;
+
+        var result = await userManager.UpdateAsync(user);
+        if (!result.Succeeded) return BadRequest(result.Errors);
+
+        // Update role
+        var currentRoles = await userManager.GetRolesAsync(user);
+        await userManager.RemoveFromRolesAsync(user, currentRoles);
+        await userManager.AddToRoleAsync(user, dto.Role);
+
+        return Ok();
+    }
+
+    [HttpPut("{id}/disable")]
+    public async Task<ActionResult> DisableUser(string id)
+    {
+        var user = await userManager.Users
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null) return NotFound();
+
+        user.IsActive = false;
+        var result = await userManager.UpdateAsync(user);
+
+        if (!result.Succeeded) return BadRequest(result.Errors);
 
         return Ok();
     }

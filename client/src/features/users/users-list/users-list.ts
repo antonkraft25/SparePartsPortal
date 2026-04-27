@@ -2,10 +2,11 @@ import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UserService } from '../../../core/services/user-service';
 import { UserCreate } from '../user-create/user-create';
 import { UserList } from '../../../types/userList';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-users-list',
-  imports: [UserCreate],
+  imports: [UserCreate, RouterLink],
   templateUrl: './users-list.html',
   styleUrl: './users-list.css',
 })
