@@ -24,7 +24,10 @@
             <th>Namn</th>
             <th>Plats</th>
             <th>Pris</th>
-            <th>Inköpspris</th>
+            @if (accountService.isAdmin() || accountService.isLagerpersonal()) {
+              <th>Inköpspris</th>
+            }
+
             <th>Saldo</th>
             <th>Antal</th>
             <th></th>
@@ -42,7 +45,9 @@
                 <th>{{ sparepart.name }}</th>
                 <td>{{ sparepart.location }}</td>
                 <td>{{ sparepart.prize }}</td>
-                <td>{{ sparepart.purchasePrize }}</td>
+                @if (accountService.isAdmin() || accountService.isLagerpersonal()) {
+                  <td>{{ sparepart.purchasePrize }}</td>
+                }
                 <td>{{ sparepart.balance }}</td>
                 <td>
                   <app-quantity-control
