@@ -1,5 +1,6 @@
 using API.Data;
 using API.DTOs;
+using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -60,7 +61,7 @@ public class OrderController(
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
+    public async Task<ActionResult> GetAllOrders([FromQuery] PaginationParams paginationParams)
     {
         var user = await userManager.GetUserAsync(User);
         if (user == null) return Unauthorized();
@@ -80,29 +81,37 @@ public class OrderController(
         if (isTekniker)
             query = query.Where(o => o.UserId == user.Id);
 
-        var orders = await query.ToListAsync();
+        var pagedOrders = await query.ToPagedListAsync(paginationParams.PageNumber, paginationParams.PageSize);
 
-        return Ok(orders.Select(o => new OrderDto
+        var result = new PagedList<OrderDto>
         {
-            Id = o.Id,
-            OrderDate = o.OrderDate,
-            Status = o.Status.Name,
-            UserName = $"{o.User.FirstName} {o.User.LastName}",
-            DeliveryAddress = new DeliveryAddressDto
+            TotalCount = pagedOrders.TotalCount,
+            PageNumber = pagedOrders.PageNumber,
+            PageSize = pagedOrders.PageSize,
+            Items = pagedOrders.Items.Select(o => new OrderDto
             {
-                StreetName = o.DeliveryAddress.StreetName,
-                City = o.DeliveryAddress.City,
-                Postalcode = o.DeliveryAddress.Postalcode
-            },
-            Items = o.OrderSpareparts.Select(os => new OrderItemResultDto
-            {
-                SparepartId = os.SparepartId,
-                SparepartName = os.Sparepart.Name,
-                SparepartLocation = os.Sparepart.Location,
-                Quantity = os.Quantity,
-                QuantitySent = os.QuantitySent
+                Id = o.Id,
+                OrderDate = o.OrderDate,
+                Status = o.Status.Name,
+                UserName = $"{o.User.FirstName} {o.User.LastName}",
+                DeliveryAddress = new DeliveryAddressDto
+                {
+                    StreetName = o.DeliveryAddress.StreetName,
+                    City = o.DeliveryAddress.City,
+                    Postalcode = o.DeliveryAddress.Postalcode
+                },
+                Items = o.OrderSpareparts.Select(os => new OrderItemResultDto
+                {
+                    SparepartId = os.SparepartId,
+                    SparepartName = os.Sparepart.Name,
+                    SparepartLocation = os.Sparepart.Location,
+                    Quantity = os.Quantity,
+                    QuantitySent = os.QuantitySent
+                }).ToList()
             }).ToList()
-        }));
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]

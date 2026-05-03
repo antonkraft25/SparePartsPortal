@@ -1,5 +1,6 @@
 using API.Data;
 using API.DTOs;
+using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,9 +11,18 @@ namespace API.Controllers
     public class ProductController(IRepository<Product> productRepository, AppDbContext context) : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProducts()
+        public async Task<ActionResult> GetAllProducts([FromQuery] PaginationParams paginationParams)
         {
-            return Ok(await productRepository.GetAllAsync());
+            var query = context.Products
+                .Select(p => new
+                {
+                    id = p.Id,
+                    name = p.Name
+                })
+                .AsQueryable();
+
+            var result = await query.ToPagedListAsync(paginationParams.PageNumber, paginationParams.PageSize);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

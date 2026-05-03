@@ -1,5 +1,6 @@
 using API.Data;
 using API.DTOs;
+using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using API.Repositories;
@@ -8,21 +9,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class SparepartsController(IRepository<Sparepart> repository) : BaseApiController
+    public class SparepartsController(IRepository<Sparepart> repository, AppDbContext context) : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<object>>> GetAllSpareparts()
+        public async Task<ActionResult> GetAllSpareparts([FromQuery] PaginationParams paginationParams)
         {
-            var spareparts = await repository.FindAsync(s => s.IsActive);
-            return Ok(spareparts.Select(s => new
-            {
-                id = s.Id,
-                name = s.Name,
-                prize = s.Prize,
-                purchasePrize = s.PurchasePrize,
-                location = s.Location,
-                balance = s.Balance
-            }));
+            var query = context.Spareparts
+                .Where(s => s.IsActive)
+                .Select(s => new
+                {
+                    id = s.Id,
+                    name = s.Name,
+                    prize = s.Prize,
+                    purchasePrize = s.PurchasePrize,
+                    location = s.Location,
+                    balance = s.Balance
+                })
+                .AsQueryable();
+
+            var result = await query.ToPagedListAsync(paginationParams.PageNumber, paginationParams.PageSize);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]

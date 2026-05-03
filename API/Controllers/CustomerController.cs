@@ -1,4 +1,6 @@
+using API.Data;
 using API.DTOs;
+using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Http;
@@ -6,20 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    public class CustomerController(IRepository<Customer> repository) : BaseApiController
+    public class CustomerController(IRepository<Customer> repository, AppDbContext context) : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetAllCustomers()
+        public async Task<ActionResult> GetAllCustomers([FromQuery] PaginationParams paginationParams)
         {
-            var customers = await repository.GetAllAsync();
-            return Ok(customers.Select(c => new
-            {
-                id = c.Id,
-                name = c.Name,
-                city = c.City,
-                postalcode = c.Postalcode,
-                streetName = c.StreetName
-            }));
+            var query = context.Customers
+                .Select(c => new
+                {
+                    id = c.Id,
+                    name = c.Name,
+                    city = c.City,
+                    postalcode = c.Postalcode,
+                    streetName = c.StreetName
+                })
+                .AsQueryable();
+
+            var result = await query.ToPagedListAsync(paginationParams.PageNumber, paginationParams.PageSize);
+            return Ok(result);
         }
 
         [HttpPost]

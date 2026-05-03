@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Data;
+using API.Helpers;
 
 namespace API.Controllers;
 
@@ -15,15 +16,18 @@ public class UserController(
     AppDbContext context) : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserListDto>>> GetAllUsers()
+    public async Task<ActionResult> GetAllUsers([FromQuery] PaginationParams paginationParams)
     {
         var users = await userManager.Users
             .Include(u => u.Customer)
             .Where(u => u.IsActive)
+            .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+            .Take(paginationParams.PageSize)
             .ToListAsync();
 
-        var result = new List<UserListDto>();
+        var totalCount = await userManager.Users.Where(u => u.IsActive).CountAsync();
 
+        var result = new List<UserListDto>();
         foreach (var user in users)
         {
             var roles = await userManager.GetRolesAsync(user);
@@ -39,7 +43,13 @@ public class UserController(
             });
         }
 
-        return Ok(result);
+        return Ok(new PagedList<UserListDto>
+        {
+            Items = result,
+            TotalCount = totalCount,
+            PageNumber = paginationParams.PageNumber,
+            PageSize = paginationParams.PageSize
+        });
     }
 
     [HttpPost]
