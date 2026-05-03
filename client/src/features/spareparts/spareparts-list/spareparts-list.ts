@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
 import { CartService } from '../../../core/services/cart-service';
 import { QuantityControl } from '../../../shared/quantity-control/quantity-control';
 import { ToastService } from '../../../core/services/toast-service';
+import { AccountService } from '../../../core/services/account-service';
 
 @Component({
   selector: 'app-sparparts-list',
@@ -19,6 +20,7 @@ export class SparepartsList implements OnInit {
   protected cartService = inject(CartService);
   private toastService = inject(ToastService);
   private cdr = inject(ChangeDetectorRef);
+  protected accountService = inject(AccountService);
 
   spareparts: Sparepart[] = [];
   quantities: { [id: string]: number } = {};

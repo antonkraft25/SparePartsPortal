@@ -2,8 +2,12 @@
   <div class="w-full px-6">
     <div class="flex justify-between mb-3">
       <div class="flex gap-2">
-        <button class="btn btn-primary" (click)="createComp.openModal()">Skapa reservdel</button>
-        <a routerLink="/products" class="btn btn-outline">Visa produkter</a>
+        @if (accountService.isAdmin() || accountService.isLagerpersonal()) {
+          <button class="btn btn-primary" (click)="createComp.openModal()">Skapa reservdel</button>
+        }
+        @if (accountService.isAdmin()) {
+          <a routerLink="/products" class="btn btn-outline">Visa produkter</a>
+        }
       </div>
       <a routerLink="/order/new" class="btn btn-outline gap-2">
         🛒 Varukorg
@@ -54,12 +58,14 @@
                   </button>
                 </td>
                 <td>
-                  <button
-                    class="btn btn-outline btn-secondary btn-sm"
-                    (click)="detailsComp.openModal(sparepart)"
-                  >
-                    Redigera
-                  </button>
+                  @if (accountService.isAdmin() || accountService.isLagerpersonal()) {
+                    <button
+                      class="btn btn-outline btn-secondary btn-sm"
+                      (click)="detailsComp.openModal(sparepart)"
+                    >
+                      Redigera
+                    </button>
+                  }
                 </td>
               </tr>
             }

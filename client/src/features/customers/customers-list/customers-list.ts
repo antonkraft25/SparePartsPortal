@@ -3,6 +3,7 @@ import { CustomerService } from '../../../core/services/customer-service';
 import { Customer } from '../../../types/customer';
 import { CustomerCreate } from '../customer-create/customer-create';
 import { CustomerEdit } from '../customer-edit/customer-edit';
+import { AccountService } from '../../../core/services/account-service';
 
 @Component({
   selector: 'app-customers-list',
@@ -13,6 +14,7 @@ import { CustomerEdit } from '../customer-edit/customer-edit';
 export class CustomersList implements OnInit {
   protected customerService = inject(CustomerService);
   private cdr = inject(ChangeDetectorRef);
+  protected accountService = inject(AccountService);
   customers: Customer[] = [];
 
   ngOnInit(): void {

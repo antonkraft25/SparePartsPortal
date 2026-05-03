@@ -31,6 +31,7 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
         if (!result.Succeeded) return BadRequest(result.Errors);
 
         await userManager.AddToRoleAsync(user, registerDto.Role);
+        var roles = await userManager.GetRolesAsync(user);
 
         return Ok(new UserDto
         {
@@ -39,7 +40,8 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
             FirstName = user.FirstName,
             LastName = user.LastName,
             Token = await tokenService.CreateToken(user),
-            CustomerId = user.CustomerId
+            CustomerId = user.CustomerId,
+            Role = roles.FirstOrDefault() ?? ""
         });
     }
 
@@ -56,6 +58,7 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
         var result = await userManager.CheckPasswordAsync(user, loginDto.Password);
 
         if (!result) return Unauthorized("Invalid email or password");
+        var roles = await userManager.GetRolesAsync(user);
 
         return Ok(new UserDto
         {
@@ -64,7 +67,8 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
             FirstName = user.FirstName,
             LastName = user.LastName,
             Token = await tokenService.CreateToken(user),
-            CustomerId = user.CustomerId
+            CustomerId = user.CustomerId,
+            Role = roles.FirstOrDefault() ?? ""
         });
     }
 
@@ -99,6 +103,7 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
 
         var result = await userManager.UpdateAsync(user);
         if (!result.Succeeded) return BadRequest(result.Errors);
+        var roles = await userManager.GetRolesAsync(user);
 
         return Ok(new UserDto
         {
@@ -107,7 +112,8 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
             FirstName = user.FirstName,
             LastName = user.LastName,
             Token = await tokenService.CreateToken(user),
-            CustomerId = user.CustomerId
+            CustomerId = user.CustomerId,
+            Role = roles.FirstOrDefault() ?? ""
         });
     }
 

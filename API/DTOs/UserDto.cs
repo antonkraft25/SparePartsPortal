@@ -8,4 +8,5 @@ public class UserDto
     public required string LastName { get; set; }
     public required string Token { get; set; }
     public required string CustomerId { get; set; }
+    public required string Role { get; set; }
 }

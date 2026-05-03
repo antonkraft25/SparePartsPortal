@@ -13,6 +13,7 @@ import { OrdersList } from '../features/orders/orders-list/orders-list';
 import { OrderDetail } from '../features/orders/order-detail/order-detail';
 import { UsersList } from '../features/users/users-list/users-list';
 import { UserDetail } from '../features/users/user-detail/user-detail';
+import { roleGuard } from '../core/guards/role-guard';
 
 
 export const routes: Routes = [
@@ -27,7 +28,7 @@ export const routes: Routes = [
   { path: 'order/new', component: OrderNew, canActivate: [authGuard] },
   { path: 'orders', component: OrdersList, canActivate: [authGuard] },
   { path: 'orders/:id', component: OrderDetail, canActivate: [authGuard] },
-  { path: 'users', component: UsersList, canActivate: [authGuard] },
-  { path: 'users/:id', component: UserDetail, canActivate: [authGuard] },
+  { path: 'users', component: UsersList, canActivate: [roleGuard(['Admin'])] },
+  { path: 'users/:id', component: UserDetail, canActivate: [roleGuard(['Admin'])] },
   { path: '**', redirectTo: 'login' }
 ];

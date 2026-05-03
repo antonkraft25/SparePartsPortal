@@ -62,14 +62,25 @@ public class OrderController(
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
     {
-        var orders = await context.Orders
+        var user = await userManager.GetUserAsync(User);
+        if (user == null) return Unauthorized();
+
+        var roles = await userManager.GetRolesAsync(user);
+        var isTekniker = roles.Contains("Tekniker");
+
+        var query = context.Orders
             .Include(o => o.Status)
             .Include(o => o.DeliveryAddress)
             .Include(o => o.User)
             .Include(o => o.OrderSpareparts)
                 .ThenInclude(os => os.Sparepart)
             .OrderByDescending(o => o.OrderDate)
-            .ToListAsync();
+            .AsQueryable();
+
+        if (isTekniker)
+            query = query.Where(o => o.UserId == user.Id);
+
+        var orders = await query.ToListAsync();
 
         return Ok(orders.Select(o => new OrderDto
         {
@@ -87,9 +98,9 @@ public class OrderController(
             {
                 SparepartId = os.SparepartId,
                 SparepartName = os.Sparepart.Name,
+                SparepartLocation = os.Sparepart.Location,
                 Quantity = os.Quantity,
-                QuantitySent = os.QuantitySent,
-                SparepartLocation = os.Sparepart.Location
+                QuantitySent = os.QuantitySent
             }).ToList()
         }));
     }

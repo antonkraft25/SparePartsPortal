@@ -5,6 +5,7 @@ import { Order } from '../../../types/order';
 import { ToastService } from '../../../core/services/toast-service';
 import { QuantityControl } from '../../../shared/quantity-control/quantity-control';
 import { DatePipe } from '@angular/common';
+import { AccountService } from '../../../core/services/account-service';
 
 @Component({
   selector: 'app-order-detail',
@@ -18,6 +19,7 @@ export class OrderDetail implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
+  protected accountService = inject(AccountService);
 
   order: Order | null = null;
   sendQuantities: { [sparepartId: string]: number } = {};

@@ -49,4 +49,21 @@ export class AccountService {
   changePassword(dto: { currentPassword: string; newPassword: string }) {
     return this.http.put(this.baseUrl + 'account/change-password', dto, { responseType: 'text' });
   }
+
+  isAdmin(): boolean {
+    return this.currentUser()?.role === 'Admin';
+  }
+
+  isLagerpersonal(): boolean {
+    return this.currentUser()?.role === 'Lagerpersonal';
+  }
+
+  isTekniker(): boolean {
+    return this.currentUser()?.role === 'Tekniker';
+  }
+
+  hasRole(roles: string[]): boolean {
+    const role = this.currentUser()?.role;
+    return role ? roles.includes(role) : false;
+  }
 }
