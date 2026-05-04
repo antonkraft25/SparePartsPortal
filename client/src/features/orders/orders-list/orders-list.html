@@ -33,6 +33,13 @@
           }
         </tbody>
       </table>
+      <app-paginator
+        [totalCount]="totalCount"
+        [totalPages]="totalPages"
+        [(pageNumber)]="pageNumber"
+        [(pageSize)]="pageSize"
+        (pageChange)="onPageChange($event)"
+      />
     </div>
   </div>
 </div>

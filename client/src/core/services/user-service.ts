@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { UserList } from '../../types/userList';
+import { PaginatedResult } from '../../types/paginated-result';
 
 @Injectable({
   providedIn: 'root',
@@ -10,8 +11,10 @@ export class UserService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl;
 
-  getUsers() {
-    return this.http.get<UserList[]>(this.baseUrl + 'user');
+  getUsers(pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.get<PaginatedResult<UserList>>(
+      this.baseUrl + `user?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    );
   }
 
   getUser(id: string) {

@@ -8,37 +8,52 @@ import { CartService } from '../../../core/services/cart-service';
 import { QuantityControl } from '../../../shared/quantity-control/quantity-control';
 import { ToastService } from '../../../core/services/toast-service';
 import { AccountService } from '../../../core/services/account-service';
+import { Paginator } from '../../../shared/paginator/paginator';
+
 
 @Component({
   selector: 'app-sparparts-list',
-  imports: [SparepartDetails, SparepartCreate, RouterLink, QuantityControl],
+  imports: [SparepartDetails, SparepartCreate, RouterLink, QuantityControl, Paginator],
   templateUrl: './spareparts-list.html',
   styleUrl: './spareparts-list.css',
 })
 export class SparepartsList implements OnInit {
   protected sparepartService = inject(SparepartService);
   protected cartService = inject(CartService);
+  protected accountService = inject(AccountService);
   private toastService = inject(ToastService);
   private cdr = inject(ChangeDetectorRef);
-  protected accountService = inject(AccountService);
 
   spareparts: Sparepart[] = [];
   quantities: { [id: string]: number } = {};
+  totalCount = 0;
+  totalPages = 0;
+  pageNumber = 1;
+  pageSize = 10;
 
   ngOnInit(): void {
     this.loadSpareparts();
   }
 
   loadSpareparts() {
-    this.sparepartService.getSpareparts().subscribe({
+    this.sparepartService.getSpareparts(this.pageNumber, this.pageSize).subscribe({
       next: (data) => {
-        this.spareparts = data;
-        this.quantities = {};
-        data.forEach((s) => (this.quantities[s.id] = 0));
+        this.spareparts = data.items;
+        this.totalCount = data.totalCount;
+        this.totalPages = data.totalPages;
+        data.items.forEach((s) => {
+          if (!this.quantities[s.id]) this.quantities[s.id] = 0;
+        });
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error loading spareparts:', err),
     });
+  }
+
+  onPageChange(event: { pageNumber: number; pageSize: number }) {
+    this.pageNumber = event.pageNumber;
+    this.pageSize = event.pageSize;
+    this.loadSpareparts();
   }
 
   onQuantityChange(sparepartId: string, quantity: number) {
@@ -62,9 +77,10 @@ export class SparepartsList implements OnInit {
 
   onSparepartDeactivated(id: string) {
     this.spareparts = this.spareparts.filter((s) => s.id !== id);
+    this.totalCount--;
   }
 
   onSparepartCreated(sparepart: Sparepart) {
-    this.spareparts = [...this.spareparts, sparepart];
+    this.loadSpareparts();
   }
 }
