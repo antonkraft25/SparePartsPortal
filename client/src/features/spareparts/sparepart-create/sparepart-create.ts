@@ -79,8 +79,8 @@ export class SparepartCreate {
   }
 
   loadProducts() {
-    this.productService.getProducts().subscribe({
-      next: (data) => (this.products = data),
+    this.productService.getProducts(1, 100).subscribe({
+      next: (data) => (this.products = data.items),
       error: (err) => console.error('Error loading products:', err),
     });
   }

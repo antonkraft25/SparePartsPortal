@@ -58,8 +58,8 @@ export class UserDetail implements OnInit {
   }
 
   loadCustomers() {
-    this.customerService.getCustomers().subscribe({
-      next: (data) => (this.customers = data),
+    this.customerService.getCustomers(1, 100).subscribe({
+      next: (data) => (this.customers = data.items),
       error: (err) => console.error('Error loading customers:', err),
     });
   }
