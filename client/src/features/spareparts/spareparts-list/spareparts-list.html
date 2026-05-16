@@ -9,12 +9,15 @@
           <a routerLink="/products" class="btn btn-outline">Visa produkter</a>
         }
       </div>
-      <a routerLink="/order/new" class="btn btn-outline gap-2">
-        🛒 Varukorg
-        @if (cartService.totalItems() > 0) {
-          <span class="badge badge-primary">{{ cartService.totalItems() }}</span>
-        }
-      </a>
+      <div class="flex gap-3 items-center">
+        <app-search (searchChange)="onSearch($event)" />
+        <a routerLink="/order/new" class="btn btn-outline gap-2">
+          🛒 Varukorg
+          @if (cartService.totalItems() > 0) {
+            <span class="badge badge-primary">{{ cartService.totalItems() }}</span>
+          }
+        </a>
+      </div>
     </div>
 
     <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
@@ -27,7 +30,6 @@
             @if (accountService.isAdmin() || accountService.isLagerpersonal()) {
               <th>Inköpspris</th>
             }
-
             <th>Saldo</th>
             <th>Antal</th>
             <th></th>

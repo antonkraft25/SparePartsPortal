@@ -13,9 +13,9 @@ export class SparepartService {
   private baseUrl = environment.apiUrl;
   sparePart = signal<Sparepart | null>(null);
 
-  getSpareparts(pageNumber: number = 1, pageSize: number = 10) {
+  getSpareparts(pageNumber: number = 1, pageSize: number = 10, search: string = '') {
     return this.http.get<PaginatedResult<Sparepart>>(
-      this.baseUrl + `spareparts?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+      this.baseUrl + `spareparts?pageNumber=${pageNumber}&pageSize=${pageSize}&search=${search}`,
     );
   }
 

@@ -9,11 +9,11 @@ import { QuantityControl } from '../../../shared/quantity-control/quantity-contr
 import { ToastService } from '../../../core/services/toast-service';
 import { AccountService } from '../../../core/services/account-service';
 import { Paginator } from '../../../shared/paginator/paginator';
-
+import { Search } from '../../../shared/search/search';
 
 @Component({
   selector: 'app-sparparts-list',
-  imports: [SparepartDetails, SparepartCreate, RouterLink, QuantityControl, Paginator],
+  imports: [SparepartDetails, SparepartCreate, RouterLink, QuantityControl, Paginator, Search],
   templateUrl: './spareparts-list.html',
   styleUrl: './spareparts-list.css',
 })
@@ -30,13 +30,13 @@ export class SparepartsList implements OnInit {
   totalPages = 0;
   pageNumber = 1;
   pageSize = 10;
-
+  searchTerm = '';
   ngOnInit(): void {
     this.loadSpareparts();
   }
 
   loadSpareparts() {
-    this.sparepartService.getSpareparts(this.pageNumber, this.pageSize).subscribe({
+    this.sparepartService.getSpareparts(this.pageNumber, this.pageSize, this.searchTerm).subscribe({
       next: (data) => {
         this.spareparts = data.items;
         this.totalCount = data.totalCount;
@@ -48,6 +48,12 @@ export class SparepartsList implements OnInit {
       },
       error: (err) => console.error('Error loading spareparts:', err),
     });
+  }
+
+  onSearch(term: string) {
+    this.searchTerm = term;
+    this.pageNumber = 1; // reset to first page on new search
+    this.loadSpareparts();
   }
 
   onPageChange(event: { pageNumber: number; pageSize: number }) {

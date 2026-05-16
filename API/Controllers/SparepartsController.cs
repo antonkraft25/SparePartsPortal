@@ -3,19 +3,33 @@ using API.DTOs;
 using API.Helpers;
 using API.Interfaces;
 using API.Models;
-using API.Repositories;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
     public class SparepartsController(IRepository<Sparepart> repository, AppDbContext context) : BaseApiController
     {
         [HttpGet]
-        public async Task<ActionResult> GetAllSpareparts([FromQuery] PaginationParams paginationParams)
+        public async Task<ActionResult> GetAllSpareparts([FromQuery] PaginationParams paginationParams, [FromQuery] string? search = null)
         {
             var query = context.Spareparts
+                .Include(s => s.ProductSpareparts)
+                    .ThenInclude(ps => ps.Product)
                 .Where(s => s.IsActive)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(s =>
+                    s.Name.ToLower().Contains(search.ToLower()) ||
+                    s.ProductSpareparts.Any(ps =>
+                        ps.Product.Name.ToLower().Contains(search.ToLower())
+                    )
+                );
+            }
+
+            var result = await query
                 .Select(s => new
                 {
                     id = s.Id,
@@ -25,9 +39,8 @@ namespace API.Controllers
                     location = s.Location,
                     balance = s.Balance
                 })
-                .AsQueryable();
+                .ToPagedListAsync(paginationParams.PageNumber, paginationParams.PageSize);
 
-            var result = await query.ToPagedListAsync(paginationParams.PageNumber, paginationParams.PageSize);
             return Ok(result);
         }
 
