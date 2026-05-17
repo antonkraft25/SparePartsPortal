@@ -1,0 +1,81 @@
+<div class="flex items-center justify-center min-h-screen w-full py-20">
+  <div class="w-full max-w-4xl px-6 flex flex-col gap-6">
+    @if (po) {
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold">Inköpsorder</h1>
+        <span class="badge badge-outline badge-lg">{{ po.status }}</span>
+      </div>
+
+      <div class="card bg-base-100 shadow">
+        <div class="card-body">
+          <h2 class="card-title">Information</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm text-base-content/50">Datum</p>
+              <p>{{ po.date | date: 'yyyy-MM-dd HH:mm' }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-base-content/50">Skapad av</p>
+              <p>{{ po.userName }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-base-100 shadow">
+        <div class="card-body">
+          <h2 class="card-title">Reservdelar</h2>
+          <div class="overflow-x-auto">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>Reservdel</th>
+                  <th>Lagerplats</th>
+                  <th>Beställt</th>
+                  <th>Mottaget</th>
+                  <th>Ta emot nu</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of po.items; track item.sparepartId) {
+                  <tr>
+                    <td>{{ item.sparepartName }}</td>
+                    <td>{{ item.sparepartLocation }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>
+                      <span
+                        [class]="
+                          item.quantityReceived >= item.quantity ? 'text-success' : 'text-warning'
+                        "
+                      >
+                        {{ item.quantityReceived }}
+                      </span>
+                    </td>
+                    <td>
+                      <app-quantity-control
+                        [quantity]="receiveQuantities[item.sparepartId]"
+                        [min]="0"
+                        [max]="item.quantity - item.quantityReceived"
+                        (quantityChange)="onQuantityChange(item.sparepartId, $event)"
+                      />
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex justify-end mt-4">
+            @if (po.status === 'Delivered') {
+              <span class="text-success font-semibold">✓ Inköpsorder mottagen</span>
+            } @else {
+              <button class="btn btn-primary" (click)="receivePurchaseOrder()">Ta emot</button>
+            }
+          </div>
+        </div>
+      </div>
+    } @else {
+      <p class="text-center">Laddar inköpsorder...</p>
+    }
+  </div>
+</div>

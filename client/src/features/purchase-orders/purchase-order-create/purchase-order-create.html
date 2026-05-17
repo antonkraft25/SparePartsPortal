@@ -1,0 +1,136 @@
+@if (isModalOpen) {
+  <div class="modal modal-open">
+    <div class="modal-box max-w-2xl">
+      <h3 class="font-bold text-lg mb-4">Skapa inköpsorder</h3>
+
+      <!-- Steps indicator -->
+      <ul class="steps w-full mb-6">
+        <li class="step" [class.step-primary]="currentStep >= 1">Välj reservdelar</li>
+        <li class="step" [class.step-primary]="currentStep >= 2">Granska</li>
+      </ul>
+
+      <!-- Step 1: Select spareparts -->
+      @if (currentStep === 1) {
+        <app-search (searchChange)="onSearch($event)" />
+
+        <div class="overflow-y-auto max-h-96 mt-3">
+          <table class="table table-zebra">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Namn</th>
+                <th>Plats</th>
+                <th>Saldo</th>
+                <th>Antal</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (sparepart of spareparts; track sparepart.id) {
+                <tr class="hover:bg-primary/10 transition-colors duration-150">
+                  <td>
+                    <input
+                      type="checkbox"
+                      class="checkbox checkbox-primary"
+                      [checked]="isSelected(sparepart.id)"
+                      (change)="toggleSparepart(sparepart)"
+                    />
+                  </td>
+                  <td class="cursor-pointer" (click)="toggleSparepart(sparepart)">
+                    {{ sparepart.name }}
+                  </td>
+                  <td class="cursor-pointer" (click)="toggleSparepart(sparepart)">
+                    {{ sparepart.location }}
+                  </td>
+                  <td class="cursor-pointer" (click)="toggleSparepart(sparepart)">
+                    {{ sparepart.balance }}
+                  </td>
+                  <td>
+                    @if (isSelected(sparepart.id)) {
+                      <app-quantity-control
+                        [quantity]="getQuantity(sparepart.id)"
+                        [min]="1"
+                        [max]="9999"
+                        (quantityChange)="onQuantityChange(sparepart.id, $event)"
+                      />
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        @if (selectedItems.length > 0) {
+          <div class="mt-4 p-3 bg-base-200 rounded-lg">
+            <p class="font-semibold mb-2">Valda reservdelar ({{ selectedItems.length }}):</p>
+            <div class="flex flex-wrap gap-2">
+              @for (item of selectedItems; track item.sparepart.id) {
+                <span class="badge badge-primary gap-2 p-3">
+                  {{ item.sparepart.name }} x{{ item.quantity }}
+                  <button (click)="removeItem(item.sparepart.id)">✕</button>
+                </span>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="modal-action">
+          <button class="btn btn-primary" (click)="nextStep()">
+            Nästa ({{ selectedItems.length }} valda)
+          </button>
+          <button class="btn" (click)="closeModal()">Stäng</button>
+        </div>
+      }
+
+      <!-- Step 2: Review -->
+      @if (currentStep === 2) {
+        @if (selectedItems.length === 0) {
+          <p class="text-base-content/50 text-center py-4">Inga reservdelar valda</p>
+        } @else {
+          <div class="overflow-y-auto max-h-96">
+            <table class="table table-zebra">
+              <thead>
+                <tr>
+                  <th>Namn</th>
+                  <th>Plats</th>
+                  <th>Antal att beställa</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of selectedItems; track item.sparepart.id) {
+                  <tr>
+                    <td>{{ item.sparepart.name }}</td>
+                    <td>{{ item.sparepart.location }}</td>
+                    <td>
+                      <app-quantity-control
+                        [quantity]="item.quantity"
+                        [min]="1"
+                        [max]="9999"
+                        (quantityChange)="onQuantityChange(item.sparepart.id, $event)"
+                      />
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-sm btn-error btn-outline"
+                        (click)="removeItem(item.sparepart.id)"
+                      >
+                        Ta bort
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+        <div class="modal-action">
+          <button class="btn btn-primary" (click)="createPurchaseOrder()">Skapa inköpsorder</button>
+          <button class="btn btn-ghost" (click)="prevStep()">Tillbaka</button>
+          <button class="btn" (click)="closeModal()">Stäng</button>
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,52 @@
+<div class="flex items-center justify-center min-h-screen w-full py-20">
+  <div class="w-full px-6">
+    <div class="flex justify-between mb-3">
+      <div class="flex gap-2">
+        <button class="btn btn-primary" (click)="createComp.openModal()">Skapa inköpsorder</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+      <table class="table table-zebra">
+        <thead>
+          <tr>
+            <th>PO ID</th>
+            <th>Datum</th>
+            <th>Skapad av</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (purchaseOrders.length === 0) {
+            <tr>
+              <td colspan="4" class="text-center">Inga inköpsordrar hittades</td>
+            </tr>
+          } @else {
+            @for (po of purchaseOrders; track po.id) {
+              <tr
+                class="cursor-pointer hover:bg-primary/10 transition-colors duration-150"
+                [routerLink]="['/purchase-orders', po.id]"
+              >
+                <td class="font-mono text-xs">{{ po.id.slice(0, 8) }}...</td>
+                <td>{{ po.date | date: 'yyyy-MM-dd HH:mm' }}</td>
+                <td>{{ po.userName }}</td>
+                <td>
+                  <span class="badge badge-outline">{{ po.status }}</span>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+      <app-paginator
+        [totalCount]="totalCount"
+        [totalPages]="totalPages"
+        [(pageNumber)]="pageNumber"
+        [(pageSize)]="pageSize"
+        (pageChange)="onPageChange($event)"
+      />
+    </div>
+  </div>
+</div>
+
+<app-purchase-order-create #createComp (poCreated)="onPoCreated()" />

@@ -11,6 +11,9 @@
       @if (accountService.isAdmin()) {
         <a routerLink="/users">Användare</a>
       }
+      @if (accountService.isAdmin() || accountService.isLagerpersonal()) {
+        <a routerLink="/purchase-orders">Inköp</a>
+      }
     </nav>
     <div class="flex align-middle ml-auto gap-3">
       <div class="dropdown mr-5 dropdown-end">

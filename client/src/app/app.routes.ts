@@ -14,6 +14,8 @@ import { OrderDetail } from '../features/orders/order-detail/order-detail';
 import { UsersList } from '../features/users/users-list/users-list';
 import { UserDetail } from '../features/users/user-detail/user-detail';
 import { roleGuard } from '../core/guards/role-guard';
+import { PurchaseOrdersList } from '../features/purchase-orders/purchase-orders-list/purchase-orders-list';
+import { PurchaseOrderDetail } from '../features/purchase-orders/purchase-order-detail/purchase-order-detail';
 
 
 export const routes: Routes = [
@@ -30,5 +32,7 @@ export const routes: Routes = [
   { path: 'orders/:id', component: OrderDetail, canActivate: [authGuard] },
   { path: 'users', component: UsersList, canActivate: [roleGuard(['Admin'])] },
   { path: 'users/:id', component: UserDetail, canActivate: [roleGuard(['Admin'])] },
+  { path: 'purchase-orders', component: PurchaseOrdersList, canActivate: [roleGuard(['Admin', 'Lagerpersonal'])] },
+  { path: 'purchase-orders/:id', component: PurchaseOrderDetail, canActivate: [roleGuard(['Admin', 'Lagerpersonal'])] },
   { path: '**', redirectTo: 'login' }
 ];
