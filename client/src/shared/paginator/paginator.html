@@ -1,5 +1,5 @@
 <div class="flex items-center w-full gap-3 py-3">
-  <span>Items per page:</span>
+  <span>Objekt per sida:</span>
   <select class="selext w-24" (change)="onPageChange(undefined, $event.target)">
     @for (size of pageSizeOptions(); track $index) {
       <option [value]="size" [selected]="size === pageSize()">{{ size }}</option>
